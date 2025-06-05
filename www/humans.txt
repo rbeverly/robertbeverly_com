@@ -11,4 +11,4 @@
 
 # TECHNOLOGY COLOPHON
 
-    CSS3, HTML5, Javascript, Rust, WASM, Lazy AI cheats
+    CSS, HTML, Javascript, Rust, WASM, wasm-pack, Lazy AI cheats
