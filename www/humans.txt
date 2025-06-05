@@ -1,0 +1,14 @@
+# humanstxt.org/
+# The humans responsible
+
+# TEAM
+
+    Rab Beverly, aka Robert, aka Charles
+
+# THANKS
+
+    Ancestors
+
+# TECHNOLOGY COLOPHON
+
+    CSS3, HTML5, Javascript, Rust, WASM, Lazy AI cheats
