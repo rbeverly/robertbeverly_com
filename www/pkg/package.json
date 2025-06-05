@@ -1,0 +1,15 @@
+{
+  "name": "conway_wasm",
+  "type": "module",
+  "version": "0.1.0",
+  "files": [
+    "conway_wasm_bg.wasm",
+    "conway_wasm.js",
+    "conway_wasm.d.ts"
+  ],
+  "main": "conway_wasm.js",
+  "types": "conway_wasm.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}
