@@ -1,9 +1,9 @@
 # humanstxt.org/
-# The humans responsible & technology colophon
+# The humans responsible
 
 # TEAM
 
-    A Person -- Who does things -- And yeah
+    Rab Beverly, aka Robert, aka Charles
 
 # THANKS
 
@@ -11,5 +11,4 @@
 
 # TECHNOLOGY COLOPHON
 
-    CSS3, HTML5
-    Apache Server Configs, jQuery, Modernizr, Normalize.css
+    CSS3, HTML5, Javascript, Rust, WASM, Lazy AI cheats
