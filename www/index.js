@@ -61,32 +61,93 @@ async function run() {
         }
     }
 
-    // Start the game automatically
-    game.start();
-    gameLoop();
+    // Initialize biotron controls
+    const enzymeSlider = document.getElementById('enzymeSlider');
+    const enzymeDisplay = document.getElementById('enzymeDisplay');
+    const autoclaveButton = document.getElementById('autoclaveButton');
+    const repopulateButton = document.getElementById('repopulateButton');
+    const autoclaveLed = document.getElementById('autoclaveLed');
+    const repopulateLed = document.getElementById('repopulateLed');
 
-    window.startGame = () => {
-        if (!game.is_running()) {
-            game.start();
-            lastUpdate = performance.now(); // Reset timing
-            gameLoop();
+    // Function to blink LED for 3 seconds
+    function blinkLed(led) {
+        led.classList.remove('off');
+        led.classList.add('blinking');
+        
+        setTimeout(() => {
+            led.classList.remove('blinking');
+            led.classList.add('off');
+        }, 3000);
+    }
+
+    // Function to update game speed based on enzyme level
+    function updateGameSpeed(enzymeLevel) {
+        if (enzymeLevel === 0) {
+            // Stop the game
+            game.stop();
+            if (animationFrameId !== null) {
+                cancelAnimationFrame(animationFrameId);
+                animationFrameId = null;
+            }
+        } else {
+            // Calculate update interval: 1-99 maps to 999-10ms
+            updateInterval = 999 - (enzymeLevel - 1) * (989 / 98);
+            
+            if (!game.is_running()) {
+                game.start();
+                lastUpdate = performance.now();
+                gameLoop();
+            }
         }
-    };
-    window.stopGame = () => {
-        game.stop();
-        if (animationFrameId !== null) {
-            cancelAnimationFrame(animationFrameId);
-            animationFrameId = null;
-        }
-    };
-    window.randomizeGame = () => {
-        game.randomize();
-        game.render('gameCanvas');
-    };
-    window.clearGame = () => {
+    }
+
+    // Enzyme slider functionality
+    enzymeSlider.addEventListener('input', function() {
+        const value = parseInt(this.value);
+        enzymeDisplay.textContent = value;
+        updateGameSpeed(value);
+    });
+
+    // Autoclave button (clear) functionality
+    autoclaveButton.addEventListener('mousedown', function() {
+        this.classList.add('active');
+    });
+
+    autoclaveButton.addEventListener('mouseup', function() {
+        this.classList.remove('active');
+    });
+
+    autoclaveButton.addEventListener('mouseleave', function() {
+        this.classList.remove('active');
+    });
+
+    autoclaveButton.addEventListener('click', function() {
         game.clear();
         game.render('gameCanvas');
-    };
+        blinkLed(autoclaveLed);
+    });
+
+    // Repopulate button (randomize) functionality
+    repopulateButton.addEventListener('mousedown', function() {
+        this.classList.add('active');
+    });
+
+    repopulateButton.addEventListener('mouseup', function() {
+        this.classList.remove('active');
+    });
+
+    repopulateButton.addEventListener('mouseleave', function() {
+        this.classList.remove('active');
+    });
+
+    repopulateButton.addEventListener('click', function() {
+        game.randomize();
+        game.render('gameCanvas');
+        blinkLed(repopulateLed);
+    });
+
+    // Initialize with default enzyme level (10 = ~100ms)
+    updateGameSpeed(10);
 }
 
 run();

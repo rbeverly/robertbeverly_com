@@ -23,11 +23,37 @@
             </ul>
         </div>
     </nav>
-    <div id="controls">
-        <button onclick="startGame()">Start</button>
-        <button onclick="stopGame()">Stop</button>
-        <button onclick="clearGame()">Clear</button>
-        <button onclick="randomizeGame()">Randomize</button>
+    <div class="widget-container">
+        <div class="retro-panel">
+            <div class="controls-section">
+                <button class="retro-button button-orange" id="autoclaveButton">
+                    <span class="button-text">AUTOCLAVE</span>
+                    <div class="button-led off" id="autoclaveLed"></div>
+                </button>
+                
+                <div class="slider-section">
+                    <label class="slider-label">ENZYMES</label>
+                    <div class="slider-container">
+                        <input type="range" min="0" max="99" value="10" class="retro-slider" id="enzymeSlider">
+                        <div class="slider-marks">
+                            <span>0</span>
+                            <span>25</span>
+                            <span>50</span>
+                            <span>75</span>
+                            <span>99</span>
+                        </div>
+                    </div>
+                    <div class="value-display" id="enzymeDisplay">10</div>
+                </div>
+                
+                <button class="retro-button button-brown" id="repopulateButton">
+                    <span class="button-text">REPOPULATE</span>
+                    <div class="button-led off" id="repopulateLed"></div>
+                </button>
+            </div>
+            
+            <div class="brand-label">BIO-TRON MK2</div>
+        </div>
     </div>
     <canvas id="gameCanvas"></canvas>
     <script type="module" src="index.js"></script>
