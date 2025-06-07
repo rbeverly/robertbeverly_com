@@ -1,0 +1,275 @@
+/* Base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Courier New", monospace;
+  background-color: #2c2c2c;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  color: #333;
+}
+
+/* Widget container */
+.widget-container {
+  width: 320px;
+  padding: 10px;
+  background: linear-gradient(145deg, #444, #222);
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* Main panel */
+.panel {
+  background: linear-gradient(to bottom, #d8cba7, #c9b993);
+  border-radius: 8px;
+  padding: 20px;
+  position: relative;
+  box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+/* Add texture overlay */
+.panel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.1'/%3E%3C/svg%3E");
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+/* Add scratches */
+.panel::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: linear-gradient(
+      90deg,
+      transparent 0%,
+      transparent 95%,
+      rgba(255, 255, 255, 0.1) 96%,
+      transparent 98%
+    ), linear-gradient(180deg, transparent 0%, transparent 97%, rgba(0, 0, 0, 0.1) 98%, transparent 99%);
+  background-size: 100px 100px, 200px 200px;
+  pointer-events: none;
+}
+
+/* Brand label */
+.brand-label {
+  font-size: 14px;
+  font-weight: bold;
+  color: #5d4c2e;
+  text-align: center;
+  margin-bottom: 20px;
+  letter-spacing: 1px;
+  text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.3);
+  position: relative;
+}
+
+.brand-label::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -8px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.2), transparent);
+}
+
+/* Controls section */
+.controls-section {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+/* Buttons container */
+.buttons-container {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 10px;
+}
+
+.button-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Button label */
+.button-label {
+  font-size: 10px;
+  color: #5d4c2e;
+  opacity: 0.8;
+  text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+/* Retro button */
+.retro-button {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(145deg, #b3a683, #a69678);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), inset 0 -2px 5px rgba(0, 0, 0, 0.2), inset 0 2px 2px
+    rgba(255, 255, 255, 0.4);
+  position: relative;
+  cursor: pointer;
+  outline: none;
+  padding: 0;
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.retro-button:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3), inset 0 -1px 3px rgba(0, 0, 0, 0.2), inset 0 2px 2px
+    rgba(255, 255, 255, 0.4);
+}
+
+.button-top {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  right: 5px;
+  bottom: 5px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #c9b993, #b3a683);
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Add wear marks to buttons */
+.button-top::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.1) 0%, transparent 20%),
+    radial-gradient(circle at 30% 30%, rgba(0, 0, 0, 0.05) 0%, transparent 30%);
+}
+
+/* Power button specific */
+#power-button .button-top {
+  background: linear-gradient(145deg, #c9b993, #b3a683);
+}
+
+#power-button.active .button-top {
+  background: linear-gradient(145deg, #e8a87c, #d89b71);
+}
+
+/* Mode button specific */
+#mode-button .button-top {
+  background: linear-gradient(145deg, #c9b993, #b3a683);
+}
+
+#mode-button.active .button-top {
+  background: linear-gradient(145deg, #a6c1da, #95b0c9);
+}
+
+/* Slider container */
+.slider-container {
+  margin-top: 10px;
+  padding: 0 10px;
+}
+
+.slider-label {
+  font-size: 10px;
+  color: #5d4c2e;
+  margin-bottom: 8px;
+  text-align: center;
+  opacity: 0.8;
+  text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+/* Slider track */
+.slider-track {
+  height: 20px;
+  background: linear-gradient(to bottom, #a69678, #b3a683);
+  border-radius: 10px;
+  position: relative;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3), inset 0 -1px 1px rgba(255, 255, 255, 0.2);
+  margin-bottom: 5px;
+}
+
+/* Slider fill */
+.slider-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 40%; /* Default position */
+  background: linear-gradient(to right, #a69678, #c9b993);
+  border-radius: 10px 0 0 10px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* Slider thumb */
+.slider-thumb {
+  width: 30px;
+  height: 30px;
+  background: linear-gradient(145deg, #d8cba7, #c9b993);
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 40%; /* Default position */
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3), inset 0 -2px 5px rgba(0, 0, 0, 0.1), inset 0 2px 2px
+    rgba(255, 255, 255, 0.4);
+}
+
+/* Add wear marks to slider thumb */
+.slider-thumb::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 60% 60%, rgba(255, 255, 255, 0.1) 0%, transparent 20%),
+    radial-gradient(circle at 40% 40%, rgba(0, 0, 0, 0.05) 0%, transparent 30%);
+}
+
+/* Slider markers */
+.slider-markers {
+  display: flex;
+  justify-content: space-between;
+  font-size: 8px;
+  color: #5d4c2e;
+  opacity: 0.7;
+  padding: 0 5px;
+}
+
+/* Status light */
+.status-light {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #5d4c2e;
+  box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.5);
+  transition: background-color 0.3s;
+}
+
+.status-light.on {
+  background: #e8a87c;
+  box-shadow: 0 0 5px #e8a87c, inset 0 0 3px rgba(0, 0, 0, 0.3);
+}

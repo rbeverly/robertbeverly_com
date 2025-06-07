@@ -1,0 +1,392 @@
+/* Retro Electronics Widget - Vanilla CSS */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+.widget-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 50%, #000000 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.retro-panel {
+    background: linear-gradient(145deg, #2a2419, #1a1612);
+    border-radius: 12px;
+    padding: 40px;
+    box-shadow: 
+        inset 0 0 20px rgba(0, 0, 0, 0.5),
+        0 20px 40px rgba(0, 0, 0, 0.3),
+        0 0 0 2px #3a332a,
+        0 0 0 4px #1a1612;
+    position: relative;
+    min-width: 500px;
+}
+
+.retro-panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 1px,
+            rgba(255, 255, 255, 0.01) 2px,
+            rgba(255, 255, 255, 0.01) 3px
+        ),
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 1px,
+            rgba(0, 0, 0, 0.02) 2px,
+            rgba(0, 0, 0, 0.02) 3px
+        );
+    border-radius: 12px;
+    pointer-events: none;
+}
+
+.panel-inner {
+    position: relative;
+    z-index: 2;
+}
+
+.retro-title {
+    font-family: 'Courier New', monospace;
+    font-size: 16px;
+    font-weight: bold;
+    color: #8b7355;
+    text-align: center;
+    margin: 0 0 30px 0;
+    letter-spacing: 2px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.controls-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+}
+
+.retro-button {
+    width: 120px;
+    height: 60px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.1s ease;
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    font-weight: bold;
+    color: #2a1f15;
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3);
+    overflow: hidden;
+}
+
+.button-orange {
+    background: 
+        radial-gradient(ellipse at 30% 30%, #d4a574, #b8935f),
+        linear-gradient(145deg, #c49968, #a67c4a);
+    box-shadow: 
+        0 6px 12px rgba(0, 0, 0, 0.4),
+        inset 0 1px 3px rgba(255, 255, 255, 0.3),
+        inset 0 -2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.button-brown {
+    background: 
+        radial-gradient(ellipse at 30% 30%, #8b6f47, #6b5437),
+        linear-gradient(145deg, #7a5f3f, #5a4530);
+    box-shadow: 
+        0 6px 12px rgba(0, 0, 0, 0.4),
+        inset 0 1px 3px rgba(255, 255, 255, 0.2),
+        inset 0 -2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.retro-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 2px,
+            rgba(0, 0, 0, 0.03) 3px,
+            rgba(0, 0, 0, 0.03) 4px
+        );
+    border-radius: 8px;
+}
+
+.retro-button::after {
+    content: '';
+    position: absolute;
+    top: 20%;
+    left: 15%;
+    width: 30%;
+    height: 8%;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+    transform: rotate(-15deg);
+}
+
+.retro-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 
+        0 8px 16px rgba(0, 0, 0, 0.4),
+        inset 0 1px 3px rgba(255, 255, 255, 0.4),
+        inset 0 -2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.retro-button.active {
+    transform: translateY(2px);
+    box-shadow: 
+        0 2px 6px rgba(0, 0, 0, 0.4),
+        inset 0 2px 8px rgba(0, 0, 0, 0.3),
+        inset 0 -1px 2px rgba(255, 255, 255, 0.1);
+}
+
+.button-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    font-size: 8px;
+    letter-spacing: 0.5px;
+}
+
+.button-led {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #442222;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.3);
+    z-index: 2;
+    transition: all 0.3s ease;
+}
+
+.button-led.blinking {
+    background: #ff4444;
+    box-shadow: 
+        0 0 4px #ff4444,
+        inset 0 1px 1px rgba(255, 255, 255, 0.3);
+    animation: blink 0.5s infinite;
+}
+
+.button-led.off {
+    background: #442222;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.3);
+}
+
+.slider-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    flex: 1;
+    max-width: 200px;
+}
+
+.slider-label {
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    font-weight: bold;
+    color: #8b7355;
+    letter-spacing: 1px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.slider-container {
+    position: relative;
+    width: 100%;
+}
+
+.retro-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 12px;
+    background: 
+        linear-gradient(to right, #3a2f22, #2a1f15, #3a2f22);
+    border-radius: 6px;
+    outline: none;
+    box-shadow: 
+        inset 0 2px 4px rgba(0, 0, 0, 0.5),
+        inset 0 -1px 2px rgba(255, 255, 255, 0.1),
+        0 1px 2px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    position: relative;
+}
+
+.retro-slider::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 5px,
+            rgba(0, 0, 0, 0.1) 6px,
+            rgba(0, 0, 0, 0.1) 7px
+        );
+    border-radius: 6px;
+    pointer-events: none;
+}
+
+.retro-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: 
+        radial-gradient(circle at 30% 30%, #c49968, #a67c4a),
+        linear-gradient(145deg, #b8935f, #8b6f47);
+    cursor: pointer;
+    box-shadow: 
+        0 4px 8px rgba(0, 0, 0, 0.4),
+        inset 0 1px 2px rgba(255, 255, 255, 0.3),
+        inset 0 -1px 3px rgba(0, 0, 0, 0.2);
+    transition: all 0.1s ease;
+}
+
+.retro-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.05);
+    box-shadow: 
+        0 6px 12px rgba(0, 0, 0, 0.4),
+        inset 0 1px 2px rgba(255, 255, 255, 0.4),
+        inset 0 -1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.retro-slider::-webkit-slider-thumb:active {
+    transform: scale(0.95);
+    box-shadow: 
+        0 2px 4px rgba(0, 0, 0, 0.4),
+        inset 0 2px 4px rgba(0, 0, 0, 0.3),
+        inset 0 -1px 1px rgba(255, 255, 255, 0.1);
+}
+
+.retro-slider::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: 
+        radial-gradient(circle at 30% 30%, #c49968, #a67c4a),
+        linear-gradient(145deg, #b8935f, #8b6f47);
+    cursor: pointer;
+    box-shadow: 
+        0 4px 8px rgba(0, 0, 0, 0.4),
+        inset 0 1px 2px rgba(255, 255, 255, 0.3),
+        inset 0 -1px 3px rgba(0, 0, 0, 0.2);
+    border: none;
+}
+
+.slider-marks {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    color: #665542;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+}
+
+.value-display {
+    background: 
+        linear-gradient(145deg, #1a1612, #2a2419);
+    border: 1px solid #3a332a;
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-family: 'Courier New', monospace;
+    font-size: 18px;
+    font-weight: bold;
+    color: #d4a574;
+    text-shadow: 0 0 4px #d4a574;
+    box-shadow: 
+        inset 0 2px 4px rgba(0, 0, 0, 0.5),
+        0 1px 2px rgba(0, 0, 0, 0.3);
+    min-width: 60px;
+    text-align: center;
+    animation: subtle-glow 3s ease-in-out infinite;
+}
+
+.brand-label {
+    position: absolute;
+    bottom: 15px;
+    right: 20px;
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    color: #554433;
+    letter-spacing: 1px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+}
+
+/* Animations */
+@keyframes subtle-glow {
+    0%, 100% { 
+        text-shadow: 0 0 4px #d4a574; 
+    }
+    50% { 
+        text-shadow: 0 0 6px #d4a574, 0 0 8px #d4a574; 
+    }
+}
+
+@keyframes blink {
+    0%, 50% { 
+        opacity: 1; 
+    }
+    51%, 100% { 
+        opacity: 0.3; 
+    }
+}
+
+/* Responsive design */
+@media (max-width: 600px) {
+    .widget-container {
+        padding: 1rem;
+    }
+    
+    .retro-panel {
+        min-width: 350px;
+        padding: 30px 20px;
+    }
+    
+    .controls-section {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .retro-button {
+        width: 100px;
+        height: 50px;
+    }
+    
+    .slider-section {
+        max-width: 250px;
+    }
+}
