@@ -12,7 +12,7 @@ async function run() {
 
     let animationFrameId = null;
     let lastUpdate = performance.now();
-    const updateInterval = 100; // 100ms for 10 updates per second
+    let updateInterval = 100; // 100ms for 10 updates per second
     let isMouseDown = false;
 
     function getGridCoordinates(event) {
