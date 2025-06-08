@@ -8,6 +8,7 @@ pub struct Game {
     height: usize,
     grid: Vec<bool>,
     running: bool,
+    theme: String,
 }
 
 #[wasm_bindgen]
@@ -26,6 +27,7 @@ impl Game {
             height,
             grid,
             running: false,
+            theme: "amber".to_string(),
         }
     }
 
@@ -66,10 +68,21 @@ impl Game {
 
         let cell_size = 3; // 3x3 pixels
         ctx.clear_rect(0.0, 0.0, canvas.width().into(), canvas.height().into());
+        
+        let (cell_color, glow_color) = if self.theme == "amber" {
+            ("#FFB000", "#FFB000") // Amber phosphor color
+        } else {
+            ("#AAFFBB", "#AAFFBB") // Green phosphor color
+        };
+        
+        // Set glow effect for phosphor simulation
+        ctx.set_shadow_color(glow_color);
+        ctx.set_shadow_blur(2.0);
+        
         for i in 0..self.height {
             for j in 0..self.width {
                 if self.grid[i * self.width + j] {
-                    ctx.set_fill_style_str("#AAFFBB"); // Light green live cells
+                    ctx.set_fill_style_str(cell_color);
                     ctx.fill_rect(
                         (j * cell_size) as f64,
                         (i * cell_size) as f64,
@@ -79,6 +92,17 @@ impl Game {
                 }
             }
         }
+        
+        // Reset shadow
+        ctx.set_shadow_blur(0.0);
+    }
+
+    pub fn set_theme(&mut self, theme: &str) {
+        self.theme = theme.to_string();
+    }
+
+    pub fn get_theme(&self) -> String {
+        self.theme.clone()
     }
 
     pub fn update(&mut self) {

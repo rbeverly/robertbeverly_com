@@ -9,6 +9,8 @@ export class Game {
   stop(): void;
   set_cell(x: number, y: number, state: boolean): void;
   render(canvas_id: string): void;
+  set_theme(theme: string): void;
+  get_theme(): string;
   update(): void;
   is_running(): boolean;
 }
@@ -25,6 +27,8 @@ export interface InitOutput {
   readonly game_stop: (a: number) => void;
   readonly game_set_cell: (a: number, b: number, c: number, d: number) => void;
   readonly game_render: (a: number, b: number, c: number) => void;
+  readonly game_set_theme: (a: number, b: number, c: number) => void;
+  readonly game_get_theme: (a: number) => [number, number];
   readonly game_update: (a: number) => void;
   readonly game_is_running: (a: number) => number;
   readonly __wbindgen_exn_store: (a: number) => void;
@@ -32,6 +36,7 @@ export interface InitOutput {
   readonly __wbindgen_export_2: WebAssembly.Table;
   readonly __wbindgen_malloc: (a: number, b: number) => number;
   readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
+  readonly __wbindgen_free: (a: number, b: number, c: number) => void;
   readonly __wbindgen_start: () => void;
 }
 

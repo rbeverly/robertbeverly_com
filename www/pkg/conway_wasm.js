@@ -218,6 +218,29 @@ export class Game {
         const len0 = WASM_VECTOR_LEN;
         wasm.game_render(this.__wbg_ptr, ptr0, len0);
     }
+    /**
+     * @param {string} theme
+     */
+    set_theme(theme) {
+        const ptr0 = passStringToWasm0(theme, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        wasm.game_set_theme(this.__wbg_ptr, ptr0, len0);
+    }
+    /**
+     * @returns {string}
+     */
+    get_theme() {
+        let deferred1_0;
+        let deferred1_1;
+        try {
+            const ret = wasm.game_get_theme(this.__wbg_ptr);
+            deferred1_0 = ret[0];
+            deferred1_1 = ret[1];
+            return getStringFromWasm0(ret[0], ret[1]);
+        } finally {
+            wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
+        }
+    }
     update() {
         wasm.game_update(this.__wbg_ptr);
     }
@@ -338,6 +361,12 @@ function __wbg_get_imports() {
     };
     imports.wbg.__wbg_setfillStyle_2205fca942c641ba = function(arg0, arg1, arg2) {
         arg0.fillStyle = getStringFromWasm0(arg1, arg2);
+    };
+    imports.wbg.__wbg_setshadowBlur_d7609cdcbaa4b3e9 = function(arg0, arg1) {
+        arg0.shadowBlur = arg1;
+    };
+    imports.wbg.__wbg_setshadowColor_a10cd9857011a9bb = function(arg0, arg1, arg2) {
+        arg0.shadowColor = getStringFromWasm0(arg1, arg2);
     };
     imports.wbg.__wbg_static_accessor_GLOBAL_88a902d13a557d07 = function() {
         const ret = typeof global === 'undefined' ? null : global;

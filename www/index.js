@@ -68,6 +68,9 @@ async function run() {
     const repopulateButton = document.getElementById('repopulateButton');
     const autoclaveLed = document.getElementById('autoclaveLed');
     const repopulateLed = document.getElementById('repopulateLed');
+    const themeSwitch = document.getElementById('themeSwitch');
+    const amberLabel = document.querySelector('.amber-label');
+    const greenLabel = document.querySelector('.green-label');
 
     // Function to blink LED for 3 seconds
     function blinkLed(led) {
@@ -101,11 +104,49 @@ async function run() {
         }
     }
 
+    // Function to update slider mark lighting
+    function updateSliderMarks(value) {
+        const marks = document.querySelectorAll('.slider-marks span');
+        const currentTheme = game.get_theme();
+        const themeColor = currentTheme === 'amber' ? '#FFB000' : '#AAFFBB';
+        
+        // Map slider value (0-99) to mark positions (0, 25, 50, 75, 99)
+        const markPositions = [0, 24.75, 49.5, 74.25, 99];
+        
+        marks.forEach((mark, index) => {
+            const markPosition = markPositions[index];
+            const distance = Math.abs(value - markPosition);
+            
+            // Calculate brightness: closer = brighter, with falloff
+            let brightness = 0;
+            if (distance <= 12.375) { // Half the distance between marks
+                if (distance === 0) {
+                    brightness = 1.0; // 100% when exactly on mark
+                } else if (distance <= 6.1875) { // Quarter distance
+                    brightness = 0.75; // 75% when very close
+                } else {
+                    brightness = 0.5 - (distance - 6.1875) / 12.375 * 0.5; // Fade from 50% to 0%
+                }
+            }
+            
+            if (brightness > 0) {
+                mark.style.color = themeColor;
+                mark.style.textShadow = `0 0 ${2 + brightness * 2}px ${themeColor}`;
+                mark.style.opacity = Math.max(0.3, brightness);
+            } else {
+                mark.style.color = '#665542';
+                mark.style.textShadow = '0 1px 1px rgba(0, 0, 0, 0.5)';
+                mark.style.opacity = '1';
+            }
+        });
+    }
+
     // Enzyme slider functionality
     enzymeSlider.addEventListener('input', function() {
         const value = parseInt(this.value);
         enzymeDisplay.textContent = value;
         updateGameSpeed(value);
+        updateSliderMarks(value);
     });
 
     // Autoclave button (clear) functionality
@@ -146,8 +187,54 @@ async function run() {
         blinkLed(repopulateLed);
     });
 
-    // Initialize with default enzyme level (10 = ~100ms)
+    // Theme switching functionality
+    function updateTheme(theme) {
+        console.log('Switching to theme:', theme);
+        const root = document.documentElement;
+        game.set_theme(theme);
+        
+        if (theme === 'amber') {
+            root.style.setProperty('--current-cell-color', '#FFB000');
+            root.style.setProperty('--current-canvas-bg', '#0D0A05');
+            canvas.style.backgroundColor = '#0D0A05';
+            themeSwitch.className = 'rotary-switch amber';
+            amberLabel.classList.add('active');
+            greenLabel.classList.remove('active');
+            enzymeDisplay.classList.remove('green');
+            enzymeDisplay.style.color = '#FFB000';
+            enzymeDisplay.style.textShadow = '0 0 4px #FFB000';
+        } else {
+            root.style.setProperty('--current-cell-color', '#AAFFBB');
+            root.style.setProperty('--current-canvas-bg', '#000000');
+            canvas.style.backgroundColor = '#000000';
+            themeSwitch.className = 'rotary-switch green';
+            greenLabel.classList.add('active');
+            amberLabel.classList.remove('active');
+            enzymeDisplay.classList.add('green');
+            enzymeDisplay.style.color = '';
+            enzymeDisplay.style.textShadow = '';
+        }
+        
+        game.render('gameCanvas');
+        
+        // Update slider marks with new theme colors
+        updateSliderMarks(parseInt(enzymeSlider.value));
+    }
+
+    // Theme switch functionality
+    themeSwitch.addEventListener('click', function() {
+        console.log('Theme switch clicked');
+        const currentTheme = game.get_theme();
+        console.log('Current theme:', currentTheme);
+        const newTheme = currentTheme === 'amber' ? 'green' : 'amber';
+        console.log('Switching to:', newTheme);
+        updateTheme(newTheme);
+    });
+
+    // Initialize with default enzyme level (10 = ~100ms) and amber theme
     updateGameSpeed(10);
+    updateTheme('amber');
+    updateSliderMarks(10);
 }
 
 run();

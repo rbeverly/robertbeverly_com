@@ -37,25 +37,44 @@
                         <input type="range" min="0" max="99" value="10" class="retro-slider" id="enzymeSlider">
                         <div class="slider-marks">
                             <span>0</span>
-                            <span>25</span>
-                            <span>50</span>
-                            <span>75</span>
+                            <span>|</span>
+                            <span>|</span>
+                            <span>|</span>
                             <span>99</span>
                         </div>
                     </div>
                     <div class="value-display" id="enzymeDisplay">10</div>
                 </div>
                 
-                <button class="retro-button button-brown" id="repopulateButton">
+                <button class="retro-button button-orange" id="repopulateButton">
                     <span class="button-text">REPOPULATE</span>
                     <div class="button-led off" id="repopulateLed"></div>
                 </button>
+                
+                <div class="theme-switch-section">
+                    <label class="theme-switch-label">DISPLAY</label>
+                    <div class="rotary-switch amber" id="themeSwitch"></div>
+                    <div class="switch-labels">
+                        <span class="amber-label active">AMB</span>
+                        <span class="green-label">GRN</span>
+                    </div>
+                </div>
             </div>
             
             <div class="brand-label">BIO-TRON MK2</div>
         </div>
     </div>
-    <canvas id="gameCanvas"></canvas>
+    <div class="crt-container">
+        <div class="crt-bezel">
+            <div class="crt-screen">
+                <canvas id="gameCanvas"></canvas>
+                <div class="crt-overlay"></div>
+                <div class="crt-scanlines"></div>
+                <div class="crt-flicker"></div>
+                <div class="crt-horizontal-line"></div>
+            </div>
+        </div>
+    </div>
     <script type="module" src="index.js"></script>
 </body>
 </html>
