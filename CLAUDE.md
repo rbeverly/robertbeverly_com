@@ -1,0 +1,2 @@
+- Always keep buttons to a maximum of 80px unless otherwise specified.
+- When running an http server, run it from www.

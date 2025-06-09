@@ -190,6 +190,13 @@ export class Game {
         GameFinalization.register(this, this.__wbg_ptr, this);
         return this;
     }
+    /**
+     * @param {number} canvas_width
+     * @param {number} canvas_height
+     */
+    resize(canvas_width, canvas_height) {
+        wasm.game_resize(this.__wbg_ptr, canvas_width, canvas_height);
+    }
     randomize() {
         wasm.game_randomize(this.__wbg_ptr);
     }
@@ -313,14 +320,6 @@ function __wbg_get_imports() {
         const ret = arg0.height;
         return ret;
     };
-    imports.wbg.__wbg_innerHeight_05f4225d754a7929 = function() { return handleError(function (arg0) {
-        const ret = arg0.innerHeight;
-        return ret;
-    }, arguments) };
-    imports.wbg.__wbg_innerWidth_7e0498dbd876d498 = function() { return handleError(function (arg0) {
-        const ret = arg0.innerWidth;
-        return ret;
-    }, arguments) };
     imports.wbg.__wbg_instanceof_CanvasRenderingContext2d_df82a4d3437bf1cc = function(arg0) {
         let result;
         try {
@@ -408,12 +407,6 @@ function __wbg_get_imports() {
     imports.wbg.__wbindgen_is_undefined = function(arg0) {
         const ret = arg0 === undefined;
         return ret;
-    };
-    imports.wbg.__wbindgen_number_get = function(arg0, arg1) {
-        const obj = arg1;
-        const ret = typeof(obj) === 'number' ? obj : undefined;
-        getDataViewMemory0().setFloat64(arg0 + 8 * 1, isLikeNone(ret) ? 0 : ret, true);
-        getDataViewMemory0().setInt32(arg0 + 4 * 0, !isLikeNone(ret), true);
     };
     imports.wbg.__wbindgen_throw = function(arg0, arg1) {
         throw new Error(getStringFromWasm0(arg0, arg1));

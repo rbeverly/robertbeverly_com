@@ -23,55 +23,66 @@
             </ul>
         </div>
     </nav>
-    <div class="widget-container">
-        <div class="retro-panel">
-            <div class="controls-section">
-                <button class="retro-button button-orange" id="autoclaveButton">
-                    <span class="button-text">AUTOCLAVE</span>
-                    <div class="button-led off" id="autoclaveLed"></div>
-                </button>
-                
-                <div class="slider-section">
-                    <label class="slider-label">ENZYMES</label>
-                    <div class="slider-container">
-                        <input type="range" min="0" max="99" value="10" class="retro-slider" id="enzymeSlider">
-                        <div class="slider-marks">
-                            <span>0</span>
-                            <span>|</span>
-                            <span>|</span>
-                            <span>|</span>
-                            <span>99</span>
+    
+    <div class="main-container">
+        <div class="controls-sidebar">
+            <div class="retro-panel">
+                <div class="controls-grid">
+                    <button class="retro-button button-orange" id="autoclaveButton">
+                        <span class="button-text">AUTOCLAVE</span>
+                        <div class="button-led off" id="autoclaveLed"></div>
+                    </button>
+                    
+                    <button class="retro-button button-orange" id="repopulateButton">
+                        <span class="button-text">REPOPULATE</span>
+                        <div class="button-led off" id="repopulateLed"></div>
+                    </button>
+                    
+                    <div class="slider-section">
+                        <label class="slider-label">ENZYMES</label>
+                        <div class="slider-container">
+                            <input type="range" min="0" max="99" value="10" class="retro-slider" id="enzymeSlider">
+                            <div class="slider-marks">
+                                <span>0</span>
+                                <span>|</span>
+                                <span>|</span>
+                                <span>|</span>
+                                <span>99</span>
+                            </div>
+                        </div>
+                        <div class="value-display" id="enzymeDisplay">10</div>
+                    </div>
+                    
+                    <div class="theme-switch-section">
+                        <label class="theme-switch-label">DISPLAY</label>
+                        <div class="rotary-switch amber" id="themeSwitch"></div>
+                        <div class="switch-labels">
+                            <span class="amber-label active">AMB</span>
+                            <span class="green-label">GRN</span>
                         </div>
                     </div>
-                    <div class="value-display" id="enzymeDisplay">10</div>
                 </div>
                 
-                <button class="retro-button button-orange" id="repopulateButton">
-                    <span class="button-text">REPOPULATE</span>
-                    <div class="button-led off" id="repopulateLed"></div>
-                </button>
-                
-                <div class="theme-switch-section">
-                    <label class="theme-switch-label">DISPLAY</label>
-                    <div class="rotary-switch amber" id="themeSwitch"></div>
-                    <div class="switch-labels">
-                        <span class="amber-label active">AMB</span>
-                        <span class="green-label">GRN</span>
-                    </div>
-                </div>
+                <div class="brand-label">BIO-TRON MK2</div>
             </div>
             
-            <div class="brand-label">BIO-TRON MK2</div>
+            <div class="decorative-panel">
+                <div class="screw screw-top-left"></div>
+                <div class="screw screw-top-right"></div>
+                <div class="screw screw-bottom-left"></div>
+                <div class="screw screw-bottom-right"></div>
+            </div>
         </div>
-    </div>
-    <div class="crt-container">
-        <div class="crt-bezel">
-            <div class="crt-screen">
-                <canvas id="gameCanvas"></canvas>
-                <div class="crt-overlay"></div>
-                <div class="crt-scanlines"></div>
-                <div class="crt-flicker"></div>
-                <div class="crt-horizontal-line"></div>
+        
+        <div class="crt-container">
+            <div class="crt-bezel">
+                <div class="crt-screen">
+                    <canvas id="gameCanvas"></canvas>
+                    <div class="crt-overlay"></div>
+                    <div class="crt-scanlines"></div>
+                    <div class="crt-flicker"></div>
+                    <div class="crt-horizontal-line"></div>
+                </div>
             </div>
         </div>
     </div>

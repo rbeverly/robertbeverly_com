@@ -15,12 +15,9 @@ pub struct Game {
 impl Game {
     #[wasm_bindgen(constructor)]
     pub fn new() -> Game {
-        let window = web_sys::window().unwrap();
-        let inner_width = window.inner_width().unwrap().as_f64().unwrap() as usize;
-        let inner_height = window.inner_height().unwrap().as_f64().unwrap() as usize;
-        let cell_size = 3; // 3x3 pixels
-        let width = inner_width / cell_size;
-        let height = (inner_height as f64 * 0.8 / cell_size as f64).floor() as usize;
+        // Initialize with placeholder dimensions - will be updated by resize method
+        let width = 100;
+        let height = 100;
         let grid = vec![false; width * height];
         Game {
             width,
@@ -28,6 +25,18 @@ impl Game {
             grid,
             running: false,
             theme: "amber".to_string(),
+        }
+    }
+
+    pub fn resize(&mut self, canvas_width: u32, canvas_height: u32) {
+        let cell_size = 3; // 3x3 pixels
+        let new_width = (canvas_width / cell_size) as usize;
+        let new_height = (canvas_height / cell_size) as usize;
+        
+        if new_width != self.width || new_height != self.height {
+            self.width = new_width;
+            self.height = new_height;
+            self.grid = vec![false; new_width * new_height];
         }
     }
 

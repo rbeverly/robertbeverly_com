@@ -4,11 +4,26 @@ async function run() {
     await init();
     const game = new Game();
     const canvas = document.getElementById('gameCanvas');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight * 0.8;
+    
+    // Function to resize canvas and game grid
+    function resizeCanvas() {
+        const crtScreen = document.querySelector('.crt-screen');
+        const rect = crtScreen.getBoundingClientRect();
+        canvas.width = rect.width;
+        canvas.height = rect.height;
+        game.resize(rect.width, rect.height);
+    }
 
+    // Initial resize and populate
+    resizeCanvas();
     game.randomize();
     game.render('gameCanvas');
+
+    // Handle window resize
+    window.addEventListener('resize', () => {
+        resizeCanvas();
+        game.render('gameCanvas');
+    });
 
     let animationFrameId = null;
     let lastUpdate = performance.now();

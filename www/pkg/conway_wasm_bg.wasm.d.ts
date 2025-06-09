@@ -3,6 +3,7 @@
 export const memory: WebAssembly.Memory;
 export const __wbg_game_free: (a: number, b: number) => void;
 export const game_new: () => number;
+export const game_resize: (a: number, b: number, c: number) => void;
 export const game_randomize: (a: number) => void;
 export const game_clear: (a: number) => void;
 export const game_start: (a: number) => void;
