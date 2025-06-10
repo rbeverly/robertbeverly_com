@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control Grid Test</title>
+    <link rel="stylesheet" href="grid-test.css">
+</head>
+<body>
+    <div class="test-container">
+        <!-- BIO-TRON Panel -->
+        <div class="control-panel bio-tron-panel">
+            <div class="button-grid">
+                <!-- Row 1: Autoclave, Repopulate buttons and AMB/GRN switch -->
+                <button class="grid-button button-orange">
+                    <span class="button-text">AUTOCLAVE</span>
+                    <span class="button-led"></span>
+                </button>
+                <button class="grid-button button-orange">
+                    <span class="button-text">REPOPULATE</span>
+                    <span class="button-led"></span>
+                </button>
+                <div class="theme-switch-cell">
+                    <div class="rotary-switch amber">
+                        <div class="switch-indicator"></div>
+                    </div>
+                    <div class="switch-labels">
+                        <span class="amber-label active">AMB</span>
+                        <span class="green-label">GRN</span>
+                    </div>
+                </div>
+                
+                <!-- Row 2: Enzyme slider and display -->
+                <div class="alt-slider-section">
+                    <input type="range" class="retro-slider" min="0" max="100" value="42">
+                    <div class="slider-marks">
+                        <span>0</span>
+                        <span>50</span>
+                        <span>100</span>
+                    </div>
+                </div>
+                <div class="enzyme-display-cell">
+                    <div class="value-display-small">42</div>
+                    <div class="enzyme-label-bottom">ENZYMES</div>
+                </div>
+                
+                <!-- Row 3-4: Cell display and controls -->
+                <div class="cell-display-grid">
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                    <div class="grid-cell"></div>
+                </div>
+                <div class="controls-column">
+                    <div class="nav-buttons">
+                        <button class="nav-button">
+                            <span class="nav-arrow">◀</span>
+                        </button>
+                        <button class="nav-button">
+                            <span class="nav-arrow">▶</span>
+                        </button>
+                    </div>
+                    <button class="grid-button button-orange">
+                        <span class="button-text">SAMPLE</span>
+                        <span class="button-led"></span>
+                    </button>
+                </div>
+                
+                <!-- Row 4: Brand label -->
+                <div class="brand-label-row">
+                    <span class="brand-label">BIO-TRON</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Grid Demo Panel -->
+        <div class="control-panel grid-demo-panel">
+            <div class="button-grid">
+                <button class="grid-button button-orange">
+                    <span class="button-text">BTN 1</span>
+                    <span class="button-led"></span>
+                </button>
+                <button class="grid-button button-brown">
+                    <span class="button-text">BTN 2</span>
+                    <span class="button-led"></span>
+                </button>
+                <button class="grid-button button-orange">
+                    <span class="button-text">BTN 3</span>
+                    <span class="button-led"></span>
+                </button>
+                <button class="grid-button button-brown">
+                    <span class="button-text">BTN 4</span>
+                    <span class="button-led"></span>
+                </button>
+                <button class="grid-button button-orange">
+                    <span class="button-text">BTN 5</span>
+                    <span class="button-led"></span>
+                </button>
+                <button class="grid-button button-brown">
+                    <span class="button-text">BTN 6</span>
+                    <span class="button-led"></span>
+                </button>
+                <button class="grid-button button-orange">
+                    <span class="button-text">BTN 7</span>
+                    <span class="button-led"></span>
+                </button>
+                <button class="grid-button button-brown">
+                    <span class="button-text">BTN 8</span>
+                    <span class="button-led"></span>
+                </button>
+                <button class="grid-button button-orange">
+                    <span class="button-text">BTN 9</span>
+                    <span class="button-led"></span>
+                </button>
+                
+                <!-- Row 4: Demo label -->
+                <div class="brand-label-row">
+                    <span class="brand-label">GRID DEMO</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

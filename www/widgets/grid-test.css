@@ -1,0 +1,533 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #000000;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.test-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    padding: 2rem;
+}
+
+.control-panel {
+    background: linear-gradient(145deg, #2a2419, #1a1612);
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: 
+        inset 0 0 20px rgba(0, 0, 0, 0.5),
+        0 20px 40px rgba(0, 0, 0, 0.3),
+        0 0 0 2px #3a332a,
+        0 0 0 4px #1a1612;
+    position: relative;
+}
+
+.control-panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 1px,
+            rgba(255, 255, 255, 0.01) 2px,
+            rgba(255, 255, 255, 0.01) 3px
+        ),
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 1px,
+            rgba(0, 0, 0, 0.02) 2px,
+            rgba(0, 0, 0, 0.02) 3px
+        );
+    border-radius: 12px;
+    pointer-events: none;
+}
+
+.button-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 80px);
+    gap: 12px;
+    position: relative;
+    z-index: 1;
+}
+
+/* BIO-TRON panel grid */
+.bio-tron-panel .button-grid {
+    grid-template-rows: 46px 46px 46px 46px 23px;
+}
+
+/* Grid demo panel grid */
+.grid-demo-panel .button-grid {
+    grid-template-rows: repeat(3, 46px) 23px;
+}
+
+.grid-button {
+    width: 80px;
+    height: 46px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.1s ease;
+    font-family: 'Courier New', monospace;
+    font-size: 9px;
+    font-weight: bold;
+    color: #2a1f15;
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3);
+    overflow: hidden;
+}
+
+.button-orange {
+    background: 
+        radial-gradient(ellipse at 30% 30%, #d4a574, #b8935f),
+        linear-gradient(145deg, #c49968, #a67c4a);
+    box-shadow: 
+        0 6px 12px rgba(0, 0, 0, 0.4),
+        inset 0 1px 3px rgba(255, 255, 255, 0.3),
+        inset 0 -2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.button-brown {
+    background: 
+        radial-gradient(ellipse at 30% 30%, #8b6f47, #6b5437),
+        linear-gradient(145deg, #7a5f3f, #5a4530);
+    box-shadow: 
+        0 6px 12px rgba(0, 0, 0, 0.4),
+        inset 0 1px 3px rgba(255, 255, 255, 0.2),
+        inset 0 -2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.grid-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 2px,
+            rgba(0, 0, 0, 0.03) 3px,
+            rgba(0, 0, 0, 0.03) 4px
+        );
+    border-radius: 8px;
+}
+
+.grid-button::after {
+    content: '';
+    position: absolute;
+    top: 20%;
+    left: 15%;
+    width: 30%;
+    height: 8%;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+    transform: rotate(-15deg);
+}
+
+.grid-button:active {
+    transform: translateY(2px);
+    box-shadow: 
+        0 2px 6px rgba(0, 0, 0, 0.4),
+        inset 0 2px 8px rgba(0, 0, 0, 0.3),
+        inset 0 -1px 2px rgba(255, 255, 255, 0.1);
+}
+
+.button-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    font-size: 8px;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+.button-led {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #442222;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.3);
+    z-index: 2;
+    transition: all 0.3s ease;
+}
+
+.button-led.active {
+    background: #ff4444;
+    box-shadow: 
+        0 0 4px #ff4444,
+        inset 0 1px 1px rgba(255, 255, 255, 0.3);
+}
+
+/* Enzyme slider section - spans 2 columns */
+.enzyme-slider-section {
+    grid-column: span 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 2px;
+    height: 46px;
+    width: calc(80px * 2 + 12px);
+    position: relative;
+}
+
+/* Enzyme label */
+.enzyme-label {
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    font-weight: bold;
+    color: #8b7355;
+    letter-spacing: 1px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    position: absolute;
+    top: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* Value display */
+.value-display {
+    background: 
+        linear-gradient(145deg, #1a1612, #2a2419);
+    border: 1px solid #3a332a;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    font-weight: bold;
+    color: #d4a574;
+    text-shadow: 0 0 4px #d4a574;
+    box-shadow: 
+        inset 0 2px 4px rgba(0, 0, 0, 0.5),
+        0 1px 2px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    width: 60px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Value display cell */
+.value-display-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 46px;
+}
+
+.retro-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: calc(100% - 16px);
+    height: 10px;
+    background: 
+        linear-gradient(to right, #3a2f22, #2a1f15, #3a2f22);
+    border-radius: 5px;
+    outline: none;
+    box-shadow: 
+        inset 0 2px 4px rgba(0, 0, 0, 0.5),
+        inset 0 -1px 2px rgba(255, 255, 255, 0.1),
+        0 1px 2px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+}
+
+.retro-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: 
+        radial-gradient(circle at 30% 30%, #c49968, #a67c4a),
+        linear-gradient(145deg, #b8935f, #8b6f47);
+    cursor: pointer;
+    box-shadow: 
+        0 4px 8px rgba(0, 0, 0, 0.4),
+        inset 0 1px 2px rgba(255, 255, 255, 0.3),
+        inset 0 -1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.retro-slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: 
+        radial-gradient(circle at 30% 30%, #c49968, #a67c4a),
+        linear-gradient(145deg, #b8935f, #8b6f47);
+    cursor: pointer;
+    box-shadow: 
+        0 4px 8px rgba(0, 0, 0, 0.4),
+        inset 0 1px 2px rgba(255, 255, 255, 0.3),
+        inset 0 -1px 3px rgba(0, 0, 0, 0.2);
+    border: none;
+}
+
+.slider-marks {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Courier New', monospace;
+    font-size: 8px;
+    color: #665542;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+    width: calc(100% - 16px);
+    margin-bottom: 4px;
+}
+
+/* Theme switch cell - single row */
+.theme-switch-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    height: 46px;
+    width: 80px;
+}
+
+.rotary-switch {
+    position: relative;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: 
+        radial-gradient(ellipse at 30% 30%, #d4a574, #b8935f),
+        linear-gradient(145deg, #c49968, #a67c4a);
+    box-shadow: 
+        0 6px 12px rgba(0, 0, 0, 0.4),
+        inset 0 1px 3px rgba(255, 255, 255, 0.3),
+        inset 0 -2px 6px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+
+.rotary-switch::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: 
+        radial-gradient(circle at 30% 30%, #c49968, #a67c4a);
+    transform: translate(-50%, -50%);
+    box-shadow: 
+        inset 0 2px 4px rgba(0, 0, 0, 0.3),
+        inset 0 -1px 2px rgba(255, 255, 255, 0.1);
+}
+
+.rotary-switch::after {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    width: 3px;
+    height: 7px;
+    background: #2a1f15;
+    border-radius: 2px;
+    transform-origin: 50% 13px;
+    transform: translateX(-50%) rotate(205deg);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.switch-labels {
+    display: flex;
+    justify-content: space-between;
+    width: 45px;
+    font-family: 'Courier New', monospace;
+    font-size: 8px;
+    color: #665542;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+}
+
+.switch-labels .active {
+    color: #FFB000;
+    text-shadow: 0 0 3px #FFB000;
+}
+
+/* Brand label row */
+.brand-label-row {
+    grid-column: span 3;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    height: 23px;
+    padding-right: 8px;
+}
+
+.brand-label {
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    color: #554433;
+    letter-spacing: 1px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+}
+
+/* Alternative slider section - spans 2 columns, no label */
+.alt-slider-section {
+    grid-column: span 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    height: 46px;
+    width: calc(80px * 2 + 12px);
+}
+
+/* Enzyme display cell - label and small display */
+.enzyme-display-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    width: 80px;
+    height: 46px;
+    padding: 4px 0;
+    box-sizing: border-box;
+}
+
+/* Enzyme label at bottom */
+.enzyme-label-bottom {
+    font-family: 'Courier New', monospace;
+    font-size: 9px;
+    font-weight: bold;
+    color: #8b7355;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Small value display */
+.value-display-small {
+    background: 
+        linear-gradient(145deg, #1a1612, #2a2419);
+    border: 1px solid #3a332a;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    font-weight: bold;
+    color: #d4a574;
+    text-shadow: 0 0 3px #d4a574;
+    box-shadow: 
+        inset 0 1px 3px rgba(0, 0, 0, 0.5),
+        0 1px 1px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    width: 32px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Cell display grid - spans 2 columns and 2 rows */
+.cell-display-grid {
+    grid-column: span 2;
+    grid-row: span 2;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(10, 1fr);
+    gap: 1px;
+    background-color: #3a332a;
+    border: 2px solid #3a332a;
+    border-radius: 4px;
+    box-shadow: 
+        inset 0 2px 4px rgba(0, 0, 0, 0.5),
+        0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Individual grid cells */
+.grid-cell {
+    background-color: #1a1612;
+    border-radius: 1px;
+    transition: background-color 0.2s ease;
+    cursor: pointer;
+}
+
+.grid-cell:hover {
+    background-color: #2a2419;
+}
+
+.grid-cell.alive {
+    background-color: #d4a574;
+    box-shadow: 0 0 2px #d4a574;
+}
+
+/* Navigation buttons container */
+.nav-buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 46px;
+}
+
+/* Individual navigation buttons */
+.nav-button {
+    width: 34px;
+    height: 46px;
+    border: none;
+    border-radius: 4px;
+    background: 
+        radial-gradient(ellipse at 30% 30%, #8b6f47, #6b5437),
+        linear-gradient(145deg, #7a5f3f, #5a4530);
+    box-shadow: 
+        0 3px 6px rgba(0, 0, 0, 0.4),
+        inset 0 1px 2px rgba(255, 255, 255, 0.2),
+        inset 0 -1px 3px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.1s ease;
+}
+
+.nav-button:active {
+    transform: translateY(1px);
+    box-shadow: 
+        0 1px 3px rgba(0, 0, 0, 0.4),
+        inset 0 1px 4px rgba(0, 0, 0, 0.3),
+        inset 0 -1px 1px rgba(255, 255, 255, 0.1);
+}
+
+/* Navigation arrows */
+.nav-arrow {
+    font-size: 10px;
+    color: #2a1f15;
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3);
+    font-weight: bold;
+}
+
+/* Controls column - spans 1 column and 2 rows */
+.controls-column {
+    grid-column: 1;
+    grid-row: 3 / span 2;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+}
