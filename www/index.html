@@ -7,22 +7,6 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <nav class="navbar">
-        <input type="checkbox" id="menu-toggle">
-        <label class="hamburger" for="menu-toggle">
-            <span></span>
-            <span></span>
-            <span></span>
-        </label>
-        <div class="menu-card">
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="https://industriouskraken.com/" target="_blank">Industrious Kraken</a></li>
-                <li><a href="https://andybeverly.com/" target="_blank">Andy Beverly School</a></li>
-                <li><a href="https://www.linkedin.com/in/robertbeverly/" target="_blank" rel="noopener noreferrer">My LinkedIn</a></li>
-            </ul>
-        </div>
-    </nav>
     
     <div class="main-container">
         <div class="controls-sidebar">
@@ -94,8 +78,12 @@
                         </button>
                     </div>
                     
-                    <!-- Row 5: Brand label -->
+                    <!-- Row 5: Brand label and menu button -->
                     <div class="brand-label-row">
+                        <button class="menu-button" id="menuButton">
+                            <span class="button-text">MENU</span>
+                            <div class="button-led off" id="menuLed"></div>
+                        </button>
                         <span class="brand-label">BIO-TRON MK2</span>
                     </div>
                 </div>
@@ -129,6 +117,17 @@
             </div>
         </div>
     </div>
+    
+    <!-- Hidden navigation links for SEO and accessibility -->
+    <nav class="hidden-nav" aria-label="Main navigation">
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="https://industriouskraken.com/" target="_blank" rel="noopener noreferrer">Industrious Kraken</a></li>
+            <li><a href="https://andybeverly.com/" target="_blank" rel="noopener noreferrer">Andy Beverly School</a></li>
+            <li><a href="https://www.linkedin.com/in/robertbeverly/" target="_blank" rel="noopener noreferrer">My LinkedIn</a></li>
+        </ul>
+    </nav>
+    
     <script type="module" src="index.js"></script>
 </body>
 </html>

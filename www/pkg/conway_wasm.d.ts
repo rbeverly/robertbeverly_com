@@ -4,6 +4,7 @@ export class Game {
   free(): void;
   constructor();
   resize(canvas_width: number, canvas_height: number): void;
+  resize_preserve(canvas_width: number, canvas_height: number): void;
   randomize(): void;
   clear(): void;
   start(): void;
@@ -23,6 +24,7 @@ export interface InitOutput {
   readonly __wbg_game_free: (a: number, b: number) => void;
   readonly game_new: () => number;
   readonly game_resize: (a: number, b: number, c: number) => void;
+  readonly game_resize_preserve: (a: number, b: number, c: number) => void;
   readonly game_randomize: (a: number) => void;
   readonly game_clear: (a: number) => void;
   readonly game_start: (a: number) => void;

@@ -197,6 +197,13 @@ export class Game {
     resize(canvas_width, canvas_height) {
         wasm.game_resize(this.__wbg_ptr, canvas_width, canvas_height);
     }
+    /**
+     * @param {number} canvas_width
+     * @param {number} canvas_height
+     */
+    resize_preserve(canvas_width, canvas_height) {
+        wasm.game_resize_preserve(this.__wbg_ptr, canvas_width, canvas_height);
+    }
     randomize() {
         wasm.game_randomize(this.__wbg_ptr);
     }

@@ -14,6 +14,15 @@ async function run() {
         game.resize(rect.width, rect.height);
     }
 
+    // Function to resize canvas and preserve game state
+    function resizeCanvasPreserve() {
+        const crtScreen = document.querySelector('.crt-screen');
+        const rect = crtScreen.getBoundingClientRect();
+        canvas.width = rect.width;
+        canvas.height = rect.height;
+        game.resize_preserve(rect.width, rect.height);
+    }
+
     // Initial resize and populate
     resizeCanvas();
     game.randomize();
@@ -21,8 +30,13 @@ async function run() {
 
     // Handle window resize
     window.addEventListener('resize', () => {
-        resizeCanvas();
-        game.render('gameCanvas');
+        resizeCanvasPreserve(); // Preserve game state during resize
+        if (menuVisible) {
+            // Re-render menu after resize
+            renderMenu();
+        } else {
+            game.render('gameCanvas');
+        }
     });
 
     let animationFrameId = null;
@@ -45,24 +59,70 @@ async function run() {
         game.render('gameCanvas'); // Immediate re-render
     }
 
-    canvas.addEventListener('mousedown', (event) => {
+    // Separate event handlers for game and menu modes
+    function gameMouseDown(event) {
         isMouseDown = true;
         paintCell(event);
-    });
+    }
 
-    canvas.addEventListener('mousemove', (event) => {
+    function gameMouseMove(event) {
         if (isMouseDown) {
             paintCell(event);
         }
-    });
+    }
 
-    canvas.addEventListener('mouseup', () => {
+    function gameMouseUp() {
         isMouseDown = false;
-    });
+    }
 
-    canvas.addEventListener('mouseleave', () => {
+    function gameMouseLeave() {
         isMouseDown = false;
-    });
+    }
+
+    // Menu state
+    let hoveredMenuIndex = -1;
+    let menuClickAreas = [];
+
+    // Function to switch between game and menu event handling
+    function setCanvasMode(isMenuMode) {
+        if (isMenuMode) {
+            // Remove game event listeners
+            canvas.removeEventListener('mousedown', gameMouseDown);
+            canvas.removeEventListener('mousemove', gameMouseMove);
+            canvas.removeEventListener('mouseup', gameMouseUp);
+            canvas.removeEventListener('mouseleave', gameMouseLeave);
+            
+            // Menu mode uses HTML overlays for interaction, no canvas events needed
+            canvas.style.cursor = 'default';
+        } else {
+            // Reset hover state and remove overlays
+            hoveredMenuIndex = -1;
+            const existingOverlays = document.querySelectorAll('.menu-hover-overlay');
+            existingOverlays.forEach(overlay => overlay.remove());
+            
+            // Stop hover tracking
+            if (window.menuHoverInterval) {
+                clearInterval(window.menuHoverInterval);
+                window.menuHoverInterval = null;
+            }
+            if (window.menuMouseTracker) {
+                document.removeEventListener('mousemove', window.menuMouseTracker);
+                window.menuMouseTracker = null;
+            }
+            
+            canvas.style.cursor = 'crosshair';
+            
+            // Restore game listeners
+            canvas.addEventListener('mousedown', gameMouseDown);
+            canvas.addEventListener('mousemove', gameMouseMove);
+            canvas.addEventListener('mouseup', gameMouseUp);
+            canvas.addEventListener('mouseleave', gameMouseLeave);
+        }
+    }
+
+    // Initialize with game mode
+    setCanvasMode(false);
+    
 
     function gameLoop() {
         if (game.is_running()) {
@@ -86,6 +146,218 @@ async function run() {
     const themeSwitch = document.getElementById('themeSwitch');
     const amberLabel = document.querySelector('.amber-label');
     const greenLabel = document.querySelector('.green-label');
+    const menuButton = document.getElementById('menuButton');
+    const menuLed = document.getElementById('menuLed');
+
+    // Menu data
+    const menuItems = [
+        { text: 'Home', url: '/', external: false },
+        { text: 'Industrious Kraken', url: 'https://industriouskraken.com/', external: true },
+        { text: 'Andy Beverly School', url: 'https://andybeverly.com/', external: true },
+        { text: 'My LinkedIn', url: 'https://www.linkedin.com/in/robertbeverly/', external: true }
+    ];
+
+    let menuVisible = false;
+
+    // Function to toggle menu visibility
+    function toggleMenu() {
+        console.log('toggleMenu called, current menuVisible:', menuVisible); // Debug
+        menuVisible = !menuVisible;
+        if (menuVisible) {
+            console.log('Opening menu'); // Debug
+            menuLed.classList.remove('off');
+            menuLed.classList.add('blinking');
+            // Stop the game when menu is visible
+            if (game.is_running()) {
+                game.stop();
+                if (animationFrameId !== null) {
+                    cancelAnimationFrame(animationFrameId);
+                    animationFrameId = null;
+                }
+            }
+            setCanvasMode(true); // Switch to menu mode
+            renderMenu();
+        } else {
+            menuLed.classList.remove('blinking');
+            menuLed.classList.add('off');
+            setCanvasMode(false); // Switch back to game mode
+            // Resume game if enzyme level > 0
+            const enzymeLevel = parseInt(enzymeSlider.value);
+            if (enzymeLevel > 0) {
+                updateGameSpeed(enzymeLevel);
+            } else {
+                game.render('gameCanvas'); // Just render the game state
+            }
+        }
+    }
+
+    // Function to render menu on canvas
+    function renderMenu() {
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const currentTheme = game.get_theme();
+        const textColor = currentTheme === 'amber' ? '#FFB000' : '#AAFFBB';
+        
+        // Clear canvas and reset click areas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        menuClickAreas = [];
+        
+        // Remove any existing hover overlays
+        const existingOverlays = document.querySelectorAll('.menu-hover-overlay');
+        existingOverlays.forEach(overlay => overlay.remove());
+        
+        // Set text properties
+        const fontSize = 16;
+        ctx.font = `${fontSize}px "Courier New", monospace`;
+        ctx.fillStyle = textColor;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        
+        // Add glow effect
+        ctx.shadowColor = textColor;
+        ctx.shadowBlur = 4;
+        
+        // Render menu items and calculate click boundaries
+        const lineHeight = 24;
+        const startY = 40;
+        const textX = 20;
+        
+        menuItems.forEach((item, index) => {
+            const y = startY + (index * lineHeight);
+            
+            // Measure text dimensions
+            const textMetrics = ctx.measureText(item.text);
+            const textWidth = textMetrics.width;
+            const textHeight = fontSize; // Approximate text height
+            
+            // Calculate click area with padding and one character width extension
+            const padding = 2;
+            const topPadding = 2;
+            const charWidth = ctx.measureText('M').width; // Use 'M' for average character width
+            const clickArea = {
+                x: textX - padding,
+                y: y, // y is already the middle baseline
+                width: textWidth + (padding * 2) + charWidth,
+                height: textHeight + padding + topPadding
+            };
+            menuClickAreas.push(clickArea);
+            
+            // Create invisible HTML overlay for hover detection
+            const overlay = document.createElement('div');
+            overlay.className = 'menu-hover-overlay';
+            overlay.style.position = 'absolute';
+            overlay.style.pointerEvents = 'auto';
+            overlay.style.cursor = 'pointer';
+            overlay.style.zIndex = '1000';
+            // overlay.style.background = 'rgba(255,0,0,0.3)'; // Visual debugging disabled
+            
+            // Add a data attribute to identify which menu item this overlay represents
+            overlay.dataset.menuIndex = index;
+            
+            // Position overlay relative to canvas
+            const canvasRect = canvas.getBoundingClientRect();
+            const rectY = clickArea.y - clickArea.height/2 - 1;
+            overlay.style.left = `${canvasRect.left + (clickArea.x * canvasRect.width / canvas.width)}px`;
+            overlay.style.top = `${canvasRect.top + (rectY * canvasRect.height / canvas.height)}px`;
+            overlay.style.width = `${(clickArea.width * canvasRect.width / canvas.width)}px`;
+            overlay.style.height = `${(clickArea.height * canvasRect.height / canvas.height)}px`;
+            
+            // Click handler for navigation
+            overlay.addEventListener('click', () => {
+                const menuItem = menuItems[index];
+                if (menuItem.external) {
+                    window.open(menuItem.url, '_blank', 'noopener,noreferrer');
+                } else {
+                    window.location.href = menuItem.url;
+                }
+                toggleMenu();
+            });
+            
+            document.body.appendChild(overlay);
+            
+            // Draw hover background if this item is hovered
+            if (index === hoveredMenuIndex) {
+                ctx.save();
+                const rectY = clickArea.y - clickArea.height/2 - 1;
+                
+                // Draw background with higher opacity
+                ctx.fillStyle = `${textColor}40`; // 40% opacity background
+                ctx.fillRect(clickArea.x, rectY, clickArea.width, clickArea.height);
+                
+                // Draw border
+                ctx.strokeStyle = textColor;
+                ctx.lineWidth = 1;
+                ctx.strokeRect(clickArea.x, rectY, clickArea.width, clickArea.height);
+                
+                ctx.restore();
+            }
+            
+            // Set text properties for each item (in case hover changed them)
+            ctx.fillStyle = textColor;
+            ctx.shadowColor = textColor;
+            ctx.shadowBlur = index === hoveredMenuIndex ? 6 : 4; // Stronger glow when hovered
+            
+            // Render the text
+            ctx.fillText(item.text, textX, y);
+        });
+        
+        // Reset shadow
+        ctx.shadowBlur = 0;
+        
+        // Store click areas for mouse tracking
+        window.menuClickAreas = menuClickAreas;
+        
+        // Start tracking mouse position globally
+        if (!window.menuMouseTracker) {
+            let lastMouseX = 0;
+            let lastMouseY = 0;
+            
+            window.menuMouseTracker = (event) => {
+                lastMouseX = event.clientX;
+                lastMouseY = event.clientY;
+            };
+            
+            document.addEventListener('mousemove', window.menuMouseTracker);
+            
+            // Poll to check if mouse is over any menu area
+            window.menuHoverInterval = setInterval(() => {
+                const canvasRect = canvas.getBoundingClientRect();
+                
+                // Convert screen coordinates to canvas coordinates
+                const canvasX = (lastMouseX - canvasRect.left) * (canvas.width / canvasRect.width);
+                const canvasY = (lastMouseY - canvasRect.top) * (canvas.height / canvasRect.height);
+                
+                let newHoveredIndex = -1;
+                
+                // Check if mouse is over any click area
+                menuItems.forEach((item, index) => {
+                    const y = 40 + (index * 24); // startY + index * lineHeight
+                    const textMetrics = ctx.measureText(item.text);
+                    const textWidth = textMetrics.width;
+                    const charWidth = ctx.measureText('M').width;
+                    
+                    const clickArea = {
+                        x: 20 - 2, // textX - padding
+                        y: y,
+                        width: textWidth + 4 + charWidth, // padding + charWidth
+                        height: 16 + 4 // fontSize + padding
+                    };
+                    
+                    const rectY = clickArea.y - clickArea.height/2 - 1;
+                    
+                    if (canvasX >= clickArea.x && canvasX <= clickArea.x + clickArea.width && 
+                        canvasY >= rectY && canvasY <= rectY + clickArea.height) {
+                        newHoveredIndex = index;
+                    }
+                });
+                
+                if (newHoveredIndex !== hoveredMenuIndex) {
+                    hoveredMenuIndex = newHoveredIndex;
+                    renderMenu();
+                }
+            }, 100);
+        }
+    }
 
     // Function to blink LED for 3 seconds
     function blinkLed(led) {
@@ -235,6 +507,23 @@ async function run() {
         // Update slider marks with new theme colors
         updateSliderMarks(parseInt(enzymeSlider.value));
     }
+
+    // Menu button functionality
+    menuButton.addEventListener('mousedown', function() {
+        this.classList.add('active');
+    });
+
+    menuButton.addEventListener('mouseup', function() {
+        this.classList.remove('active');
+    });
+
+    menuButton.addEventListener('mouseleave', function() {
+        this.classList.remove('active');
+    });
+
+    menuButton.addEventListener('click', function() {
+        toggleMenu();
+    });
 
     // Theme switch functionality
     themeSwitch.addEventListener('click', function() {

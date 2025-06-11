@@ -37,7 +37,7 @@ This is a Conway's Game of Life implementation with a retro-styled control panel
 1. **WASM Game Engine** (`src/lib.rs`): Rust-based Conway's Game of Life implementation
    - Handles game state, updates, and canvas rendering
    - Supports theme switching (amber/green phosphor)
-   - Dynamic grid resizing based on canvas dimensions
+   - Dynamic grid resizing with state preservation (`resize_preserve` method)
    - 3x3 pixel cell rendering with glow effects
 
 2. **Frontend Interface** (`www/index.js`): JavaScript application controller
@@ -45,9 +45,10 @@ This is a Conway's Game of Life implementation with a retro-styled control panel
    - Handles mouse interaction for cell painting
    - Controls game speed via enzyme slider (0-99 maps to 999-10ms intervals)
    - Manages retro control panel interactions (buttons, LEDs, theme switching)
+   - Canvas-based navigation menu system with hover effects
 
 3. **Retro UI System** (`www/style.css`): CRT monitor and control panel styling
-   - 80x46px grid-based control panel layout
+   - 80x46px grid-based control panel layout with compact menu button
    - CRT display effects (scanlines, phosphor glow, bezel)
    - Responsive design (top controls on portrait, sidebar on landscape)
 
@@ -56,7 +57,8 @@ This is a Conway's Game of Life implementation with a retro-styled control panel
 - **Canvas Rendering**: WASM directly draws to HTML5 canvas with theme-aware colors
 - **Control Bindings**: JavaScript event handlers call WASM methods for game control
 - **Theme System**: Synchronized between WASM rendering and CSS variables
-- **Responsive Canvas**: Auto-resizes game grid based on CRT screen container dimensions
+- **Adaptive Canvas**: Auto-resizes game grid with state preservation during window resize
+- **Menu System**: Canvas-based navigation with HTML overlay hover detection and SEO-friendly hidden links
 
 ### File Structure
 ```

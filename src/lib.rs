@@ -40,6 +40,34 @@ impl Game {
         }
     }
 
+    pub fn resize_preserve(&mut self, canvas_width: u32, canvas_height: u32) {
+        let cell_size = 3; // 3x3 pixels
+        let new_width = (canvas_width / cell_size) as usize;
+        let new_height = (canvas_height / cell_size) as usize;
+        
+        if new_width != self.width || new_height != self.height {
+            // Create new grid with new dimensions (all cells start as false/dead)
+            let mut new_grid = vec![false; new_width * new_height];
+            
+            // Copy existing cells that fit within both old and new bounds
+            let copy_width = self.width.min(new_width);
+            let copy_height = self.height.min(new_height);
+            
+            for i in 0..copy_height {
+                for j in 0..copy_width {
+                    let old_idx = i * self.width + j;
+                    let new_idx = i * new_width + j;
+                    new_grid[new_idx] = self.grid[old_idx];
+                }
+            }
+            
+            // Update game state
+            self.width = new_width;
+            self.height = new_height;
+            self.grid = new_grid;
+        }
+    }
+
     pub fn randomize(&mut self) {
         for cell in self.grid.iter_mut() {
             *cell = Math::random() < 0.3;
