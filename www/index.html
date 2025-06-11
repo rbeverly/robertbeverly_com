@@ -26,44 +26,79 @@
     
     <div class="main-container">
         <div class="controls-sidebar">
-            <div class="retro-panel">
-                <div class="controls-grid">
-                    <button class="retro-button button-orange" id="autoclaveButton">
+            <div class="control-panel">
+                <div class="button-grid">
+                    <!-- Row 1: AUTOCLAVE, REPOPULATE, AMB/GRN switch -->
+                    <button class="grid-button button-orange" id="autoclaveButton">
                         <span class="button-text">AUTOCLAVE</span>
                         <div class="button-led off" id="autoclaveLed"></div>
                     </button>
                     
-                    <button class="retro-button button-orange" id="repopulateButton">
+                    <button class="grid-button button-orange" id="repopulateButton">
                         <span class="button-text">REPOPULATE</span>
                         <div class="button-led off" id="repopulateLed"></div>
                     </button>
                     
-                    <div class="slider-section">
-                        <label class="slider-label">ENZYMES</label>
-                        <div class="slider-container">
-                            <input type="range" min="0" max="99" value="10" class="retro-slider" id="enzymeSlider">
-                            <div class="slider-marks">
-                                <span>0</span>
-                                <span>|</span>
-                                <span>|</span>
-                                <span>|</span>
-                                <span>99</span>
-                            </div>
-                        </div>
-                        <div class="value-display" id="enzymeDisplay">10</div>
-                    </div>
-                    
-                    <div class="theme-switch-section">
-                        <label class="theme-switch-label">DISPLAY</label>
+                    <div class="theme-switch-cell">
                         <div class="rotary-switch amber" id="themeSwitch"></div>
                         <div class="switch-labels">
                             <span class="amber-label active">AMB</span>
                             <span class="green-label">GRN</span>
                         </div>
                     </div>
+                    
+                    <!-- Row 2: ENZYMES slider and display -->
+                    <div class="alt-slider-section">
+                        <input type="range" min="0" max="99" value="10" class="retro-slider" id="enzymeSlider">
+                        <div class="slider-marks">
+                            <span>0</span>
+                            <span>25</span>
+                            <span>50</span>
+                            <span>75</span>
+                            <span>99</span>
+                        </div>
+                    </div>
+                    
+                    <div class="enzyme-display-cell">
+                        <div class="value-display-small" id="enzymeDisplay">10</div>
+                        <div class="enzyme-label-bottom">ENZYMES</div>
+                    </div>
+                    
+                    <!-- Row 3-4: Cell display and controls -->
+                    <div class="cell-display-grid" id="cellDisplayGrid">
+                        <!-- 100 cells for 10x10 grid -->
+                        <div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div>
+                        <div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div>
+                        <div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div>
+                        <div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div>
+                        <div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div>
+                        <div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div>
+                        <div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div>
+                        <div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div>
+                        <div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div>
+                        <div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div>
+                    </div>
+                    
+                    <div class="controls-column">
+                        <div class="nav-buttons">
+                            <button class="nav-button" id="prevButton">
+                                <span class="nav-arrow">◀</span>
+                            </button>
+                            <button class="nav-button" id="nextButton">
+                                <span class="nav-arrow">▶</span>
+                            </button>
+                        </div>
+                        <button class="grid-button button-orange" id="sampleButton">
+                            <span class="button-text">SAMPLE</span>
+                            <div class="button-led off" id="sampleLed"></div>
+                        </button>
+                    </div>
+                    
+                    <!-- Row 5: Brand label -->
+                    <div class="brand-label-row">
+                        <span class="brand-label">BIO-TRON MK2</span>
+                    </div>
                 </div>
-                
-                <div class="brand-label">BIO-TRON MK2</div>
             </div>
             
             <div class="decorative-panel">

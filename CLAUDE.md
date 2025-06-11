@@ -1,2 +1,4 @@
-- Always keep buttons to a maximum of 80px unless otherwise specified.
+- Always respect the grid system documented in README.md when implementing controls.
 - When running an http server, run it from www.
+- Always check which branches exist already, and branch off of dev unless otherwise specified.
+- Only put information about project changes in commit messages, and never advertise claude in them.

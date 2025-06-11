@@ -13,9 +13,9 @@ body {
     grid-template-columns: auto 1fr;
     grid-template-rows: 1fr;
     height: calc(100vh - 90px);
-    margin-top: 70px;
     gap: 1rem;
     padding: 1rem;
+    margin-top: 70px;
     box-sizing: border-box;
 }
 
@@ -23,25 +23,23 @@ body {
     display: flex;
     align-items: flex-start;
     justify-content: center;
-    min-width: 280px;
-    max-width: 320px;
+    min-width: 312px;
+    max-width: 340px;
 }
 
-.retro-panel {
+.control-panel {
     background: linear-gradient(145deg, #2a2419, #1a1612);
     border-radius: 12px;
-    padding: 30px 25px;
+    padding: 12px;
     box-shadow: 
         inset 0 0 20px rgba(0, 0, 0, 0.5),
         0 20px 40px rgba(0, 0, 0, 0.3),
         0 0 0 2px #3a332a,
         0 0 0 4px #1a1612;
     position: relative;
-    width: 100%;
-    max-width: 280px;
 }
 
-.retro-panel::before {
+.control-panel::before {
     content: '';
     position: absolute;
     top: 0;
@@ -67,16 +65,18 @@ body {
     pointer-events: none;
 }
 
-.controls-grid {
+.button-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px 15px;
-    align-items: start;
+    grid-template-columns: repeat(3, 80px);
+    grid-template-rows: 46px 46px 46px 46px 23px;
+    gap: 12px;
+    position: relative;
+    z-index: 1;
 }
 
-.retro-button {
-    width: 100%;
-    height: 50px;
+.grid-button {
+    width: 80px;
+    height: 46px;
     border-radius: 8px;
     border: none;
     cursor: pointer;
@@ -110,7 +110,7 @@ body {
         inset 0 -2px 6px rgba(0, 0, 0, 0.3);
 }
 
-.retro-button::before {
+.grid-button::before {
     content: '';
     position: absolute;
     top: 0;
@@ -128,7 +128,7 @@ body {
     border-radius: 8px;
 }
 
-.retro-button::after {
+.grid-button::after {
     content: '';
     position: absolute;
     top: 20%;
@@ -140,7 +140,7 @@ body {
     transform: rotate(-15deg);
 }
 
-.retro-button.active {
+.grid-button.active {
     transform: translateY(2px);
     box-shadow: 
         0 2px 6px rgba(0, 0, 0, 0.4),
@@ -156,6 +156,7 @@ body {
     z-index: 2;
     font-size: 8px;
     letter-spacing: 0.5px;
+    white-space: nowrap;
 }
 
 .button-led {
@@ -184,21 +185,43 @@ body {
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.3);
 }
 
-.slider-section {
+/* Enzyme slider section - spans 2 columns */
+.enzyme-slider-section {
+    grid-column: span 2;
     display: flex;
     flex-direction: column;
+    justify-content: flex-end;
     align-items: center;
-    gap: 12px;
-    grid-column: span 2;
+    gap: 2px;
+    height: 46px;
+    width: calc(80px * 2 + 12px);
+    position: relative;
 }
 
-.slider-label {
+/* Alternative slider section - spans 2 columns, no label */
+.alt-slider-section {
+    grid-column: span 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    height: 46px;
+    width: calc(80px * 2 + 12px);
+}
+
+/* Enzyme label */
+.enzyme-label {
     font-family: 'Courier New', monospace;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: bold;
     color: #8b7355;
     letter-spacing: 1px;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    position: absolute;
+    top: 4px;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .slider-container {
@@ -209,11 +232,11 @@ body {
 .retro-slider {
     -webkit-appearance: none;
     appearance: none;
-    width: 100%;
-    height: 12px;
+    width: calc(100% - 16px);
+    height: 10px;
     background: 
         linear-gradient(to right, #3a2f22, #2a1f15, #3a2f22);
-    border-radius: 6px;
+    border-radius: 5px;
     outline: none;
     box-shadow: 
         inset 0 2px 4px rgba(0, 0, 0, 0.5),
@@ -245,8 +268,8 @@ body {
 .retro-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
     background: 
         radial-gradient(circle at 30% 30%, #c49968, #a67c4a),
@@ -276,8 +299,8 @@ body {
 }
 
 .retro-slider::-moz-range-thumb {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
     background: 
         radial-gradient(circle at 30% 30%, #c49968, #a67c4a),
@@ -293,11 +316,12 @@ body {
 .slider-marks {
     display: flex;
     justify-content: space-between;
-    margin-top: 8px;
     font-family: 'Courier New', monospace;
-    font-size: 10px;
+    font-size: 8px;
     color: #665542;
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+    width: calc(100% - 16px);
+    margin-bottom: 4px;
 }
 
 .value-display {
@@ -305,17 +329,20 @@ body {
         linear-gradient(145deg, #1a1612, #2a2419);
     border: 1px solid #3a332a;
     border-radius: 4px;
-    padding: 8px 16px;
     font-family: 'Courier New', monospace;
-    font-size: 18px;
+    font-size: 14px;
     font-weight: bold;
     color: #d4a574;
     text-shadow: 0 0 4px #d4a574;
     box-shadow: 
         inset 0 2px 4px rgba(0, 0, 0, 0.5),
         0 1px 2px rgba(0, 0, 0, 0.3);
-    min-width: 60px;
     text-align: center;
+    width: 60px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     animation: subtle-glow 3s ease-in-out infinite;
     transition: color 0.3s ease, text-shadow 0.3s ease;
 }
@@ -329,10 +356,172 @@ body {
     animation: subtle-glow-green 3s ease-in-out infinite;
 }
 
+/* Enzyme display cell - label and small display */
+.enzyme-display-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    width: 80px;
+    height: 46px;
+    padding: 4px 0;
+    box-sizing: border-box;
+}
+
+/* Enzyme label at bottom */
+.enzyme-label-bottom {
+    font-family: 'Courier New', monospace;
+    font-size: 9px;
+    font-weight: bold;
+    color: #8b7355;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Small value display */
+.value-display-small {
+    background: 
+        linear-gradient(145deg, #1a1612, #2a2419);
+    border: 1px solid #3a332a;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    font-weight: bold;
+    color: #d4a574;
+    text-shadow: 0 0 3px #d4a574;
+    box-shadow: 
+        inset 0 1px 3px rgba(0, 0, 0, 0.5),
+        0 1px 1px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    width: 32px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: subtle-glow 3s ease-in-out infinite;
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.value-display-small.green {
+    color: #AAFFBB;
+    text-shadow: 0 0 3px #AAFFBB;
+    animation: subtle-glow-green 3s ease-in-out infinite;
+}
+
+/* Theme switch cell - single row */
+.theme-switch-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    height: 46px;
+    width: 80px;
+}
+
+/* Cell display grid - spans 2 columns and 2 rows */
+.cell-display-grid {
+    grid-column: span 2;
+    grid-row: span 2;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(10, 1fr);
+    gap: 1px;
+    background-color: #3a332a;
+    border: 2px solid #3a332a;
+    border-radius: 4px;
+    box-shadow: 
+        inset 0 2px 4px rgba(0, 0, 0, 0.5),
+        0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Individual grid cells */
+.grid-cell {
+    background-color: #1a1612;
+    border-radius: 1px;
+    transition: background-color 0.2s ease;
+    cursor: pointer;
+}
+
+.grid-cell:hover {
+    background-color: #2a2419;
+}
+
+.grid-cell.alive {
+    background-color: #d4a574;
+    box-shadow: 0 0 2px #d4a574;
+}
+
+/* Navigation buttons container */
+.nav-buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 46px;
+}
+
+/* Individual navigation buttons */
+.nav-button {
+    width: 34px;
+    height: 46px;
+    border: none;
+    border-radius: 4px;
+    background: 
+        radial-gradient(ellipse at 30% 30%, #8b6f47, #6b5437),
+        linear-gradient(145deg, #7a5f3f, #5a4530);
+    box-shadow: 
+        0 3px 6px rgba(0, 0, 0, 0.4),
+        inset 0 1px 2px rgba(255, 255, 255, 0.2),
+        inset 0 -1px 3px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.1s ease;
+}
+
+.nav-button:active {
+    transform: translateY(1px);
+    box-shadow: 
+        0 1px 3px rgba(0, 0, 0, 0.4),
+        inset 0 1px 4px rgba(0, 0, 0, 0.3),
+        inset 0 -1px 1px rgba(255, 255, 255, 0.1);
+}
+
+/* Navigation arrows */
+.nav-arrow {
+    font-size: 10px;
+    color: #2a1f15;
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3);
+    font-weight: bold;
+}
+
+/* Controls column - spans 1 column and 2 rows */
+.controls-column {
+    grid-column: 1;
+    grid-row: 3 / span 2;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+}
+
+/* Brand label row */
+.brand-label-row {
+    grid-column: span 3;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    height: 23px;
+    padding-right: 8px;
+}
+
 .brand-label {
-    position: absolute;
-    bottom: 15px;
-    right: 20px;
     font-family: 'Courier New', monospace;
     font-size: 10px;
     color: #554433;
@@ -530,6 +719,7 @@ body {
     align-items: center;
     padding: 0.5rem;
     background: radial-gradient(ellipse at center, #1a1a1a 0%, #000000 70%);
+    width: 100%;
     height: 100%;
     overflow: hidden;
     box-sizing: border-box;
@@ -539,8 +729,8 @@ body {
     background: 
         linear-gradient(145deg, #2c2c2c, #1a1a1a),
         radial-gradient(ellipse at 30% 30%, #3a3a3a, #1a1a1a);
-    border-radius: 2rem;
-    padding: 1.5rem;
+    border-radius: min(2rem, 5%);
+    padding: min(1.5rem, 3%);
     box-shadow: 
         inset 0 0 1.5rem rgba(0, 0, 0, 0.8),
         0 0 2rem rgba(0, 0, 0, 0.5),
@@ -568,7 +758,7 @@ body {
 
 .crt-screen {
     position: relative;
-    border-radius: 1.5rem;
+    border-radius: min(1.5rem, 4%);
     overflow: hidden;
     box-shadow: 
         inset 0 0 2rem rgba(0, 0, 0, 0.9),
@@ -604,14 +794,14 @@ canvas {
     height: 100%;
     cursor: crosshair;
     background-color: transparent;
-    border-radius: 1.5rem;
+    border-radius: min(1.5rem, 4%);
     position: relative;
     z-index: 1;
     filter: 
         contrast(1.1) 
         brightness(1.05) 
         drop-shadow(0 0 3px var(--current-cell-color));
-    object-fit: fill;
+    object-fit: contain;
 }
 
 .crt-overlay {
@@ -705,8 +895,8 @@ canvas {
 
 .rotary-switch {
     position: relative;
-    width: 60px;
-    height: 60px;
+    width: 36px !important;
+    height: 36px !important;
     border-radius: 50%;
     background: 
         radial-gradient(ellipse at 30% 30%, #d4a574, #b8935f),
@@ -716,8 +906,6 @@ canvas {
         inset 0 1px 3px rgba(255, 255, 255, 0.3),
         inset 0 -2px 6px rgba(0, 0, 0, 0.2);
     cursor: pointer;
-    user-select: none;
-    transition: transform 0.2s ease;
 }
 
 .rotary-switch::before {
@@ -725,8 +913,8 @@ canvas {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 40px;
-    height: 40px;
+    width: 24px !important;
+    height: 24px !important;
     border-radius: 50%;
     background: 
         radial-gradient(circle at 30% 30%, #c49968, #a67c4a);
@@ -739,16 +927,15 @@ canvas {
 .rotary-switch::after {
     content: '';
     position: absolute;
-    top: 8px;
+    top: 5px;
     left: 50%;
-    width: 4px;
-    height: 12px;
+    width: 3px;
+    height: 7px;
     background: #2a1f15;
     border-radius: 2px;
-    transform-origin: 50% 22px; /* Center of knob (30px radius - 8px from top) */
-    transform: translateX(-50%) rotate(205deg); /* Default to amber position */
+    transform-origin: 50% 13px;
+    transform: translateX(-50%) rotate(205deg);
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-    transition: transform 0.2s ease;
 }
 
 .rotary-switch.amber::after {
@@ -759,21 +946,13 @@ canvas {
     transform: translateX(-50%) rotate(155deg); /* Down and right towards GRN */
 }
 
-.rotary-switch:hover {
-    transform: scale(1.05);
-}
-
-.rotary-switch:active {
-    transform: scale(0.95);
-}
 
 .switch-labels {
     display: flex;
     justify-content: space-between;
-    width: 80px;
-    margin-top: 5px;
+    width: 45px;
     font-family: 'Courier New', monospace;
-    font-size: 8px;
+    font-size: 8px !important;
     color: #665542;
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
 }
@@ -899,470 +1078,52 @@ canvas {
     color: #0a66c2; /* LinkedIn blue for hover */
 }
 
-/* Responsive Design - Flexible aspect-ratio based layout */
+/* Responsive Design - Ultra-simple: top vs side positioning */
 
-/* Wide landscape screens: sidebar layout */
-@media (min-aspect-ratio: 4/3) and (min-width: 800px) {
+/* Default: Top controls */
+.main-container {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.controls-sidebar {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.decorative-panel {
+    display: none;
+}
+
+/* Landscape: Sidebar layout */
+@media (orientation: landscape) {
     .main-container {
-        grid-template-columns: clamp(175px, 20vw, 280px) 1fr;
+        grid-template-columns: auto 1fr;
         grid-template-rows: 1fr;
-        height: calc(100vh - 90px);
-        gap: clamp(0.5rem, 2vw, 1.5rem);
-        padding: clamp(0.5rem, 2vw, 1.5rem);
-        z-index: 1;
     }
     
     .controls-sidebar {
-        min-width: clamp(175px, 20vw, 280px);
-        max-width: clamp(175px, 20vw, 280px);
-        display: flex;
         flex-direction: column;
         justify-content: flex-start;
-        gap: clamp(8px, 1.5vw, 20px);
-        z-index: 10;
-        position: relative;
-    }
-    
-    .retro-panel {
-        padding: clamp(12px, 2vw, 25px);
-        width: 100%;
-        flex-shrink: 0;
+        align-items: center;
     }
     
     .decorative-panel {
         display: block;
-        flex: 1;
-        padding: clamp(12px, 2vw, 25px);
-        margin-top: 0;
-        align-self: stretch;
-        min-height: clamp(80px, 15vh, 150px);
-        width: 100%;
-        max-width: clamp(175px, 20vw, 280px);
-    }
-    
-    .controls-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: clamp(8px, 1.5vw, 20px) clamp(6px, 1vw, 15px);
-    }
-    
-    .slider-section {
-        grid-column: span 2;
-        gap: clamp(6px, 1vw, 12px);
-    }
-    
-    .theme-switch-section {
-        grid-column: span 2;
-        justify-self: start;
-        gap: clamp(4px, 0.8vw, 10px);
-        margin-top: clamp(4px, 0.8vw, 10px);
-    }
-    
-    .retro-button {
-        height: 40px;
-        width: 80px;
-        font-size: clamp(8px, 1.2vw, 12px);
-        max-width: 80px;
-    }
-    
-    .button-text {
-        font-size: clamp(7px, 1vw, 10px);
-    }
-    
-    .slider-label {
-        font-size: clamp(10px, 1.4vw, 16px);
-    }
-    
-    .value-display {
-        font-size: clamp(12px, 2vw, 22px);
-        padding: clamp(3px, 0.8vw, 8px) clamp(6px, 1.2vw, 16px);
-    }
-    
-    .rotary-switch {
-        width: clamp(28px, 5vw, 60px);
-        height: clamp(28px, 5vw, 60px);
-    }
-    
-    .rotary-switch::before {
-        width: clamp(18px, 3.5vw, 40px);
-        height: clamp(18px, 3.5vw, 40px);
-    }
-    
-    .theme-switch-label {
-        font-size: clamp(8px, 1.2vw, 14px);
-    }
-    
-    .switch-labels {
-        font-size: clamp(7px, 1vw, 12px);
-        width: clamp(35px, 6vw, 80px);
-    }
-    
-    .brand-label {
-        font-size: clamp(9px, 1.2vw, 14px);
-        bottom: clamp(8px, 1.5vw, 20px);
-        right: clamp(12px, 2vw, 25px);
-    }
-    
-    .crt-container {
-        z-index: 1;
-        position: relative;
-        padding-left: clamp(1rem, 3vw, 2rem);
-    }
-    
-    .crt-bezel {
-        border-radius: clamp(0.75rem, 2vw, 2rem);
-        padding: clamp(0.5rem, 1.5vw, 1.5rem);
-    }
-    
-    .crt-screen {
-        border-radius: clamp(0.5rem, 1.5vw, 1.5rem);
+        padding: 1rem;
+        width: 120px;
+        height: 80px;
     }
 }
 
-/* Compact landscape screens: smaller sidebar */
-@media (min-aspect-ratio: 4/3) and (max-width: 799px) and (orientation: landscape) {
-    .main-container {
-        grid-template-columns: clamp(140px, 25vw, 200px) 1fr;
-        grid-template-rows: 1fr;
-        height: calc(100vh - clamp(50px, 8vh, 90px));
-        gap: clamp(0.3rem, 1vw, 0.8rem);
-        padding: clamp(0.3rem, 1vw, 0.8rem);
-        margin-top: clamp(40px, 6vh, 70px);
-        z-index: 1;
-    }
-    
-    .controls-sidebar {
-        min-width: clamp(140px, 25vw, 200px);
-        max-width: clamp(140px, 25vw, 200px);
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        gap: clamp(6px, 1vh, 12px);
-        z-index: 10;
-        position: relative;
-    }
-    
-    .retro-panel {
-        padding: clamp(8px, 1.5vw, 15px);
-        border-radius: clamp(6px, 1vw, 10px);
-        width: 100%;
-        flex-shrink: 0;
-    }
-    
-    .decorative-panel {
-        display: block;
-        flex: 1;
-        padding: clamp(8px, 1.5vw, 15px);
-        margin-top: 0;
-        align-self: stretch;
-        min-height: clamp(60px, 12vh, 100px);
-        width: 100%;
-        max-width: clamp(140px, 25vw, 200px);
-    }
-    
-    .controls-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: clamp(6px, 1vh, 10px) clamp(4px, 0.8vw, 8px);
-    }
-    
-    .slider-section {
-        grid-column: span 2;
-        gap: clamp(4px, 0.8vh, 8px);
-    }
-    
-    .theme-switch-section {
-        grid-column: span 2;
-        gap: clamp(3px, 0.6vh, 6px);
-        justify-self: start;
-        margin-top: clamp(3px, 0.6vh, 6px);
-    }
-    
-    .retro-button {
-        height: 40px;
-        width: 80px;
-        font-size: clamp(7px, 1vw, 9px);
-        max-width: 80px;
-    }
-    
-    .button-text {
-        font-size: clamp(6px, 0.8vw, 8px);
-    }
-    
-    .slider-label {
-        font-size: clamp(8px, 1.2vw, 12px);
-    }
-    
-    .value-display {
-        font-size: clamp(10px, 1.4vw, 14px);
-        padding: clamp(2px, 0.5vw, 4px) clamp(4px, 0.8vw, 8px);
-    }
-    
-    .rotary-switch {
-        width: clamp(20px, 3vh, 35px);
-        height: clamp(20px, 3vh, 35px);
-    }
-    
-    .rotary-switch::before {
-        width: clamp(14px, 2vh, 25px);
-        height: clamp(14px, 2vh, 25px);
-    }
-    
-    .theme-switch-label {
-        font-size: clamp(7px, 1vw, 10px);
-    }
-    
-    .switch-labels {
-        font-size: clamp(6px, 0.8vw, 9px);
-        width: clamp(25px, 4vw, 40px);
-        margin-top: clamp(1px, 0.3vh, 3px);
-    }
-    
-    .brand-label {
-        font-size: clamp(8px, 1vw, 11px);
-        bottom: clamp(6px, 1vh, 12px);
-        right: clamp(8px, 1.5vw, 15px);
-    }
-    
-    .crt-container {
-        padding-left: clamp(0.8rem, 2vw, 1.5rem);
-    }
-    
-    .crt-bezel {
-        border-radius: clamp(0.5rem, 1vw, 1rem);
-        padding: clamp(0.3rem, 0.8vw, 0.8rem);
-    }
-    
-    .crt-screen {
-        border-radius: clamp(0.3rem, 0.8vw, 0.8rem);
-    }
-}
-
-/* Portrait and narrow screens: top controls */
-@media (max-aspect-ratio: 4/3), (max-width: 799px) and (orientation: portrait) {
-    .main-container {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto 1fr;
-        height: calc(100vh - clamp(70px, 10vh, 90px));
-        padding: clamp(0.5rem, 2vw, 1rem);
-        gap: clamp(0.5rem, 1vh, 1rem);
-        z-index: 1;
-    }
-    
-    .controls-sidebar {
-        min-width: unset;
-        max-width: unset;
-        width: 100%;
-        z-index: 10;
-        position: relative;
-        display: flex;
-        flex-direction: row;
-        align-items: stretch;
-        gap: clamp(0.5rem, 2vw, 1.5rem);
-    }
-    
-    .retro-panel {
-        padding: clamp(12px, 2.5vw, 25px);
-        width: auto;
-        flex-shrink: 0;
-        max-width: none;
-        display: flex;
-        flex-direction: column;
-    }
-    
-    .decorative-panel {
-        display: flex;
-        flex: 1;
-        padding: clamp(12px, 2.5vw, 25px);
-        margin-top: 0;
-        max-width: clamp(120px, 30vw, 250px);
-        align-self: stretch;
-    }
-    
-    .controls-grid {
-        display: grid;
-        grid-template-areas: "button1 button2 slider switch";
-        grid-template-columns: auto auto 1fr auto;
-        gap: clamp(6px, 1.5vw, 15px);
-        align-items: center;
-        justify-content: start;
-    }
-    
-    .controls-grid .retro-button:first-child {
-        grid-area: button1;
-    }
-    
-    .controls-grid .retro-button:nth-child(2) {
-        grid-area: button2;
-    }
-    
-    .slider-section {
-        grid-area: slider;
-        gap: clamp(3px, 0.8vw, 8px);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        max-width: none;
-        min-width: clamp(80px, 20vw, 140px);
-    }
-    
-    .theme-switch-section {
-        grid-area: switch;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: clamp(3px, 0.8vw, 8px);
-    }
-    
-    .retro-button {
-        height: 40px;
-        width: 80px;
-        font-size: clamp(8px, 1.4vw, 11px);
-        max-width: 80px;
-    }
-    
-    .button-text {
-        font-size: clamp(7px, 1.2vw, 10px);
-    }
-    
-    .slider-label {
-        font-size: clamp(10px, 1.7vw, 16px);
-    }
-    
-    .slider-container {
-        width: 100%;
-    }
-    
-    .value-display {
-        font-size: clamp(12px, 2.2vw, 20px);
-        padding: clamp(3px, 1vw, 8px) clamp(6px, 1.5vw, 16px);
-    }
-    
-    .rotary-switch {
-        width: clamp(25px, 5vw, 45px);
-        height: clamp(25px, 5vw, 45px);
-    }
-    
-    .rotary-switch::before {
-        width: clamp(16px, 3vw, 30px);
-        height: clamp(16px, 3vw, 30px);
-    }
-    
-    .theme-switch-label {
-        font-size: clamp(8px, 1.4vw, 12px);
-    }
-    
-    .switch-labels {
-        font-size: clamp(7px, 1.2vw, 10px);
-        width: clamp(30px, 6vw, 50px);
-        margin-top: clamp(1px, 0.5vw, 3px);
-    }
-    
-    .brand-label {
-        position: absolute;
-        bottom: clamp(10px, 2vw, 20px);
-        left: clamp(15px, 3vw, 25px);
-        right: auto;
-        font-size: clamp(8px, 1.4vw, 12px);
-    }
-    
-    .crt-container {
-        z-index: 1;
-        position: relative;
-        padding-left: clamp(0.5rem, 1vw, 1rem);
-    }
-    
-    .crt-bezel {
-        border-radius: clamp(0.8rem, 2vw, 1.5rem);
-        padding: clamp(0.5rem, 1.5vw, 1.2rem);
-    }
-    
-    .crt-screen {
-        border-radius: clamp(0.5rem, 1.5vw, 1.2rem);
-    }
-}
-
-/* Very small screens: ultra-compact single row layout */
-@media (max-width: 500px) {
-    .controls-sidebar {
-        flex-direction: column;
-        gap: clamp(0.3rem, 1vh, 0.8rem);
-        align-items: stretch;
-    }
-    
-    .retro-panel {
-        display: block;
-    }
-    
+/* Constrained height: Hide decorative panel */
+@media (orientation: landscape) and (max-height: 500px) {
     .decorative-panel {
         display: none;
-    }
-    
-    .controls-grid {
-        grid-template-areas: "button1 button2 slider switch";
-        grid-template-columns: auto auto 1fr auto;
-        gap: clamp(8px, 2vw, 12px);
-        align-items: center;
-    }
-    
-    .slider-section {
-        max-width: none;
-        min-width: clamp(50px, 12vw, 80px);
-        gap: clamp(1px, 0.3vw, 3px);
-        margin: 0 clamp(4px, 1vw, 8px);
-    }
-    
-    .slider-label {
-        font-size: clamp(7px, 1.2vw, 10px);
-    }
-    
-    .slider-container {
-        width: 100%;
-    }
-    
-    .value-display {
-        font-size: clamp(9px, 1.4vw, 12px);
-        padding: clamp(1px, 0.3vw, 3px) clamp(3px, 0.8vw, 6px);
-    }
-    
-    .retro-button {
-        height: 40px;
-        width: 80px;
-        max-width: 80px;
-        font-size: clamp(8px, 1.4vw, 11px);
-    }
-    
-    .button-text {
-        font-size: clamp(7px, 1.2vw, 10px);
-    }
-    
-    .rotary-switch {
-        width: clamp(20px, 4vw, 30px);
-        height: clamp(20px, 4vw, 30px);
-    }
-    
-    .rotary-switch::before {
-        width: clamp(14px, 2.5vw, 20px);
-        height: clamp(14px, 2.5vw, 20px);
-    }
-    
-    .theme-switch-label {
-        font-size: clamp(7px, 1.2vw, 9px);
-    }
-    
-    .switch-labels {
-        font-size: clamp(6px, 1vw, 8px);
-        width: clamp(20px, 4vw, 30px);
-        margin-top: clamp(1px, 0.2vw, 2px);
-    }
-    
-    .brand-label {
-        position: static;
-        margin-top: clamp(4px, 1vw, 8px);
-        margin-left: 0;
-        text-align: left;
-        font-size: clamp(7px, 1.2vw, 9px);
-    }
-    
-    .crt-container {
-        padding-left: 0;
     }
 }
