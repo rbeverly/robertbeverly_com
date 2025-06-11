@@ -12,7 +12,7 @@ import init, { Game } from './pkg/conway_wasm.js';
             // 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
             // 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 
-// Conway's Game of Life Pattern Library (all patterns are 16x10)
+// Conway's Game of Life Pattern Library
 const DEFAULT_PATTERNS = {
     dot: {
         name: "Dot",
@@ -412,13 +412,10 @@ const DEFAULT_PATTERNS = {
     }
 };
 
-// Pattern management system
 let userPatterns = {};
 let allPatterns = {};
 let currentPatternIndex = 0;
 let patternKeys = [];
-
-// Load user patterns from localStorage
 function loadUserPatterns() {
     try {
         const saved = localStorage.getItem('userPatterns');
@@ -429,7 +426,6 @@ function loadUserPatterns() {
     }
 }
 
-// Save user patterns to localStorage
 function saveUserPatterns() {
     try {
         localStorage.setItem('userPatterns', JSON.stringify(userPatterns));
@@ -438,7 +434,6 @@ function saveUserPatterns() {
     }
 }
 
-// Check if pattern already exists
 function isDuplicatePattern(cells, width, height) {
     return Object.values(allPatterns).some(pattern => 
         pattern.width === width && 
@@ -447,7 +442,6 @@ function isDuplicatePattern(cells, width, height) {
     );
 }
 
-// Helper function to compare arrays
 function arraysEqual(a, b) {
     if (a.length !== b.length) return false;
     for (let i = 0; i < a.length; i++) {
@@ -456,13 +450,11 @@ function arraysEqual(a, b) {
     return true;
 }
 
-// Add user pattern
 function addUserPattern(name, cells, width, height) {
     if (isDuplicatePattern(cells, width, height)) {
         return { success: false, message: "Organism already saved" };
     }
     
-    // Generate unique key
     let key = name.toLowerCase().replace(/[^a-z0-9]/g, '_');
     let counter = 1;
     while (allPatterns[key]) {
@@ -483,30 +475,25 @@ function addUserPattern(name, cells, width, height) {
     return { success: true, message: "Pattern saved successfully" };
 }
 
-// Update combined pattern library
 function updatePatternLibrary() {
     allPatterns = { ...DEFAULT_PATTERNS, ...userPatterns };
     patternKeys = Object.keys(allPatterns);
-    // Keep current index valid
     if (currentPatternIndex >= patternKeys.length) {
         currentPatternIndex = 0;
     }
 }
 
-// Get current pattern
 function getCurrentPattern() {
     if (patternKeys.length === 0) return null;
     return allPatterns[patternKeys[currentPatternIndex]];
 }
 
-// Cycle to next pattern
 function nextPattern() {
     if (patternKeys.length > 0) {
         currentPatternIndex = (currentPatternIndex + 1) % patternKeys.length;
     }
 }
 
-// Cycle to previous pattern
 function previousPattern() {
     if (patternKeys.length > 0) {
         currentPatternIndex = (currentPatternIndex - 1 + patternKeys.length) % patternKeys.length;
@@ -514,7 +501,6 @@ function previousPattern() {
 }
 
 
-// Place pattern on grid at specified position
 function placePattern(game, pattern, startX, startY) {
     for (let y = 0; y < pattern.height; y++) {
         for (let x = 0; x < pattern.width; x++) {
@@ -530,27 +516,36 @@ function placePattern(game, pattern, startX, startY) {
     }
 }
 
-// Update the pattern display grid
+// Current display state (separate from pattern library)
+let currentDisplayCells = new Array(160).fill(0);
+
+function getCurrentDisplayCells() {
+    return [...currentDisplayCells];
+}
+function setCurrentDisplayCells(cells) {
+    currentDisplayCells = [...cells];
+}
+
 function updatePatternDisplay(game, cellDisplayGrid) {
     const pattern = getCurrentPattern();
     const cells = cellDisplayGrid.querySelectorAll('.grid-cell');
     const currentTheme = game.get_theme();
     const themeColor = currentTheme === 'amber' ? '#FFB000' : '#AAFFBB';
     
-    // Clear all cells
     cells.forEach(cell => {
         cell.style.backgroundColor = '';
         cell.style.boxShadow = '';
     });
     
     if (pattern) {
-        // The grid is 16x10, pattern should already be in this format
+        setCurrentDisplayCells(pattern.cells);
+        
         const gridWidth = 16;
         const gridHeight = 10;
         
         for (let y = 0; y < gridHeight; y++) {
             for (let x = 0; x < gridWidth; x++) {
-                if (pattern.cells[y * gridWidth + x] === 1) {
+                if (currentDisplayCells[y * gridWidth + x] === 1) {
                     const cellIndex = y * gridWidth + x;
                     if (cellIndex < cells.length) {
                         cells[cellIndex].style.backgroundColor = themeColor;
@@ -562,30 +557,26 @@ function updatePatternDisplay(game, cellDisplayGrid) {
     }
 }
 
-// Enhanced repopulate function with pattern placement
+// Enhanced repopulate using pattern library
 function enhancedRepopulate(game) {
     const gridWidth = game.get_width();
     const gridHeight = game.get_height();
     const sectionWidth = 16;
     const sectionHeight = 10;
     
-    // Calculate how many complete sections we can fit
     const sectionsX = Math.floor(gridWidth / sectionWidth);
     const sectionsY = Math.floor(gridHeight / sectionHeight);
     
-    // Keep track of patterns placed to ensure we place at least one
     let patternsPlaced = 0;
     
-    // For each complete 16x10 section, 30% chance to place a random pattern
+    // For each complete 16x10 section, 6% chance to place a random pattern
     for (let sy = 0; sy < sectionsY; sy++) {
         for (let sx = 0; sx < sectionsX; sx++) {
             if (Math.random() < 0.06) {
-                // Pick a random pattern
                 const patterns = Object.values(allPatterns);
                 if (patterns.length > 0) {
                     const pattern = patterns[Math.floor(Math.random() * patterns.length)];
                     
-                    // Since patterns are now 16x10, place them directly in the section
                     const sectionStartX = sx * sectionWidth;
                     const sectionStartY = sy * sectionHeight;
                     
@@ -596,7 +587,6 @@ function enhancedRepopulate(game) {
         }
     }
     
-    // If no patterns were placed, ensure we place at least one
     if (patternsPlaced === 0 && sectionsX > 0 && sectionsY > 0) {
         const patterns = Object.values(allPatterns);
         if (patterns.length > 0) {
@@ -609,10 +599,8 @@ function enhancedRepopulate(game) {
         }
     }
     
-    // Handle edge areas with sparse randomization
     const sparseChance = 0.15;
     
-    // Right edge
     const rightEdgeStart = sectionsX * sectionWidth;
     if (rightEdgeStart < gridWidth) {
         for (let x = rightEdgeStart; x < gridWidth; x++) {
@@ -624,11 +612,10 @@ function enhancedRepopulate(game) {
         }
     }
     
-    // Bottom edge
     const bottomEdgeStart = sectionsY * sectionHeight;
     if (bottomEdgeStart < gridHeight) {
         for (let y = bottomEdgeStart; y < gridHeight; y++) {
-            for (let x = 0; x < rightEdgeStart; x++) { // Only up to right edge to avoid double-filling corner
+            for (let x = 0; x < rightEdgeStart; x++) {
                 if (Math.random() < sparseChance) {
                     game.set_cell(x, y, true);
                 }
@@ -642,12 +629,10 @@ async function run() {
     const game = new Game();
     const canvas = document.getElementById('gameCanvas');
     
-    // Initialize pattern system
     loadUserPatterns();
     updatePatternLibrary();
     
     
-    // Function to resize canvas and game grid
     function resizeCanvas() {
         const crtScreen = document.querySelector('.crt-screen');
         const rect = crtScreen.getBoundingClientRect();
@@ -656,7 +641,6 @@ async function run() {
         game.resize(rect.width, rect.height);
     }
 
-    // Function to resize canvas and preserve game state
     function resizeCanvasPreserve() {
         const crtScreen = document.querySelector('.crt-screen');
         const rect = crtScreen.getBoundingClientRect();
@@ -665,14 +649,11 @@ async function run() {
         game.resize_preserve(rect.width, rect.height);
     }
 
-    // Initial resize (populate will be handled by loadSavedState)
     resizeCanvas();
 
-    // Handle window resize
     window.addEventListener('resize', () => {
-        resizeCanvasPreserve(); // Preserve game state during resize
+        resizeCanvasPreserve();
         if (menuVisible) {
-            // Re-render menu after resize
             renderMenu();
         } else {
             game.render('gameCanvas');
@@ -684,47 +665,46 @@ async function run() {
     let updateInterval = 100; // 100ms for 10 updates per second
     let isMouseDown = false;
     let lastAutoSave = performance.now();
-    let isInitializing = true; // Prevent saves during initialization
+    let isInitializing = true;
 
     function getGridCoordinates(event) {
         const rect = canvas.getBoundingClientRect();
         const scaleX = canvas.width / rect.width;
         const scaleY = canvas.height / rect.height;
-        const x = Math.floor((event.clientX - rect.left) * scaleX / 3); // 3x3 cell size
+        const x = Math.floor((event.clientX - rect.left) * scaleX / 3);
         const y = Math.floor((event.clientY - rect.top) * scaleY / 3);
         return { x, y };
     }
 
     function paintCell(event) {
         const { x, y } = getGridCoordinates(event);
-        game.set_cell(x, y, true); // Set cell to live
-        game.render('gameCanvas'); // Immediate re-render
+        game.set_cell(x, y, true);
+        game.render('gameCanvas');
         
-        // Debounced save to avoid excessive localStorage writes during painting
         clearTimeout(window.paintSaveTimeout);
         window.paintSaveTimeout = setTimeout(() => {
             saveGameState();
-        }, 500); // Save 500ms after user stops painting
+        }, 500);
     }
 
     function handleCanvasClick(event) {
-        if (selectedPatternForPlacement) {
-            // Place the selected pattern at click location
+        const displayCells = getCurrentDisplayCells();
+        if (displayCells && displayCells.some(cell => cell === 1)) {
+            const displayPattern = {
+                cells: displayCells,
+                width: 16,
+                height: 10
+            };
+            
             const { x, y } = getGridCoordinates(event);
-            placePattern(game, selectedPatternForPlacement, x, y);
+            placePattern(game, displayPattern, x, y);
             game.render('gameCanvas');
             saveGameState();
-            
-            // Reset pattern placement mode
-            selectedPatternForPlacement = null;
-            canvas.style.cursor = 'crosshair';
         } else {
-            // Normal cell painting
             paintCell(event);
         }
     }
 
-    // Separate event handlers for game and menu modes
     function gameMouseDown(event) {
         isMouseDown = true;
         handleCanvasClick(event);
@@ -744,28 +724,22 @@ async function run() {
         isMouseDown = false;
     }
 
-    // Menu state
     let hoveredMenuIndex = -1;
     let menuClickAreas = [];
 
-    // Function to switch between game and menu event handling
     function setCanvasMode(isMenuMode) {
         if (isMenuMode) {
-            // Remove game event listeners
             canvas.removeEventListener('mousedown', gameMouseDown);
             canvas.removeEventListener('mousemove', gameMouseMove);
             canvas.removeEventListener('mouseup', gameMouseUp);
             canvas.removeEventListener('mouseleave', gameMouseLeave);
             
-            // Menu mode uses HTML overlays for interaction, no canvas events needed
             canvas.style.cursor = 'default';
         } else {
-            // Reset hover state and remove overlays
             hoveredMenuIndex = -1;
             const existingOverlays = document.querySelectorAll('.menu-hover-overlay');
             existingOverlays.forEach(overlay => overlay.remove());
             
-            // Stop hover tracking
             if (window.menuHoverInterval) {
                 clearInterval(window.menuHoverInterval);
                 window.menuHoverInterval = null;
@@ -777,7 +751,6 @@ async function run() {
             
             canvas.style.cursor = 'crosshair';
             
-            // Restore game listeners
             canvas.addEventListener('mousedown', gameMouseDown);
             canvas.addEventListener('mousemove', gameMouseMove);
             canvas.addEventListener('mouseup', gameMouseUp);
@@ -785,7 +758,6 @@ async function run() {
         }
     }
 
-    // Initialize with game mode
     setCanvasMode(false);
     
 
@@ -793,21 +765,19 @@ async function run() {
         if (game.is_running()) {
             const currentTime = performance.now();
             if (currentTime - lastUpdate >= updateInterval) {
-                game.update(); // Model update every 100ms
+                game.update();
                 lastUpdate = currentTime;
                 
-                // Auto-save every 30 seconds during gameplay
                 if (currentTime - lastAutoSave >= 30000) {
                     saveGameState();
                     lastAutoSave = currentTime;
                 }
             }
-            game.render('gameCanvas'); // Render every frame
+            game.render('gameCanvas');
             animationFrameId = requestAnimationFrame(gameLoop);
         }
     }
 
-    // Initialize biotron controls
     const enzymeSlider = document.getElementById('enzymeSlider');
     const enzymeDisplay = document.getElementById('enzymeDisplay');
     const autoclaveButton = document.getElementById('autoclaveButton');
@@ -825,7 +795,6 @@ async function run() {
     const nextButton = document.getElementById('nextButton');
     const cellDisplayGrid = document.getElementById('cellDisplayGrid');
 
-    // Menu data
     const menuItems = [
         { text: 'Home', url: '/', external: false },
         { text: 'Industrious Kraken', url: 'https://industriouskraken.com/', external: true },
@@ -835,13 +804,11 @@ async function run() {
 
     let menuVisible = false;
 
-    // Function to toggle menu visibility
     function toggleMenu() {
         menuVisible = !menuVisible;
         if (menuVisible) {
             menuLed.classList.remove('off');
             menuLed.classList.add('blinking');
-            // Stop the game when menu is visible
             if (game.is_running()) {
                 game.stop();
                 if (animationFrameId !== null) {
@@ -849,18 +816,17 @@ async function run() {
                     animationFrameId = null;
                 }
             }
-            setCanvasMode(true); // Switch to menu mode
+            setCanvasMode(true);
             renderMenu();
         } else {
             menuLed.classList.remove('blinking');
             menuLed.classList.add('off');
-            setCanvasMode(false); // Switch back to game mode
-            // Resume game if enzyme level > 0
+            setCanvasMode(false);
             const enzymeLevel = parseInt(enzymeSlider.value);
             if (enzymeLevel > 0) {
                 updateGameSpeed(enzymeLevel);
             } else {
-                game.render('gameCanvas'); // Just render the game state
+                game.render('gameCanvas');
             }
         }
     }
@@ -871,27 +837,20 @@ async function run() {
         const ctx = canvas.getContext('2d');
         const currentTheme = game.get_theme();
         const textColor = currentTheme === 'amber' ? '#FFB000' : '#AAFFBB';
-        
-        // Clear canvas and reset click areas
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         menuClickAreas = [];
         
-        // Remove any existing hover overlays
         const existingOverlays = document.querySelectorAll('.menu-hover-overlay');
         existingOverlays.forEach(overlay => overlay.remove());
         
-        // Set text properties
         const fontSize = 16;
         ctx.font = `${fontSize}px "Courier New", monospace`;
         ctx.fillStyle = textColor;
         ctx.textAlign = 'left';
         ctx.textBaseline = 'middle';
-        
-        // Add glow effect
         ctx.shadowColor = textColor;
         ctx.shadowBlur = 4;
         
-        // Render menu items and calculate click boundaries
         const lineHeight = 24;
         const startY = 40;
         const textX = 20;
@@ -899,36 +858,30 @@ async function run() {
         menuItems.forEach((item, index) => {
             const y = startY + (index * lineHeight);
             
-            // Measure text dimensions
             const textMetrics = ctx.measureText(item.text);
             const textWidth = textMetrics.width;
-            const textHeight = fontSize; // Approximate text height
+            const textHeight = fontSize;
             
-            // Calculate click area with padding and one character width extension
             const padding = 2;
             const topPadding = 2;
-            const charWidth = ctx.measureText('M').width; // Use 'M' for average character width
+            const charWidth = ctx.measureText('M').width;
             const clickArea = {
                 x: textX - padding,
-                y: y, // y is already the middle baseline
+                y: y,
                 width: textWidth + (padding * 2) + charWidth,
                 height: textHeight + padding + topPadding
             };
             menuClickAreas.push(clickArea);
             
-            // Create invisible HTML overlay for hover detection
             const overlay = document.createElement('div');
             overlay.className = 'menu-hover-overlay';
             overlay.style.position = 'absolute';
             overlay.style.pointerEvents = 'auto';
             overlay.style.cursor = 'pointer';
             overlay.style.zIndex = '1000';
-            // overlay.style.background = 'rgba(255,0,0,0.3)'; // Visual debugging disabled
             
-            // Add a data attribute to identify which menu item this overlay represents
             overlay.dataset.menuIndex = index;
             
-            // Position overlay relative to canvas
             const canvasRect = canvas.getBoundingClientRect();
             const rectY = clickArea.y - clickArea.height/2 - 1;
             overlay.style.left = `${canvasRect.left + (clickArea.x * canvasRect.width / canvas.width)}px`;
@@ -936,7 +889,6 @@ async function run() {
             overlay.style.width = `${(clickArea.width * canvasRect.width / canvas.width)}px`;
             overlay.style.height = `${(clickArea.height * canvasRect.height / canvas.height)}px`;
             
-            // Click handler for navigation
             overlay.addEventListener('click', () => {
                 const menuItem = menuItems[index];
                 if (menuItem.external) {
@@ -949,16 +901,13 @@ async function run() {
             
             document.body.appendChild(overlay);
             
-            // Draw hover background if this item is hovered
             if (index === hoveredMenuIndex) {
                 ctx.save();
                 const rectY = clickArea.y - clickArea.height/2 - 1;
                 
-                // Draw background with higher opacity
-                ctx.fillStyle = `${textColor}40`; // 40% opacity background
+                ctx.fillStyle = `${textColor}40`;
                 ctx.fillRect(clickArea.x, rectY, clickArea.width, clickArea.height);
                 
-                // Draw border
                 ctx.strokeStyle = textColor;
                 ctx.lineWidth = 1;
                 ctx.strokeRect(clickArea.x, rectY, clickArea.width, clickArea.height);
@@ -966,22 +915,17 @@ async function run() {
                 ctx.restore();
             }
             
-            // Set text properties for each item (in case hover changed them)
             ctx.fillStyle = textColor;
             ctx.shadowColor = textColor;
-            ctx.shadowBlur = index === hoveredMenuIndex ? 6 : 4; // Stronger glow when hovered
+            ctx.shadowBlur = index === hoveredMenuIndex ? 6 : 4;
             
-            // Render the text
             ctx.fillText(item.text, textX, y);
         });
         
-        // Reset shadow
         ctx.shadowBlur = 0;
         
-        // Store click areas for mouse tracking
         window.menuClickAreas = menuClickAreas;
         
-        // Start tracking mouse position globally
         if (!window.menuMouseTracker) {
             let lastMouseX = 0;
             let lastMouseY = 0;
@@ -997,24 +941,22 @@ async function run() {
             window.menuHoverInterval = setInterval(() => {
                 const canvasRect = canvas.getBoundingClientRect();
                 
-                // Convert screen coordinates to canvas coordinates
                 const canvasX = (lastMouseX - canvasRect.left) * (canvas.width / canvasRect.width);
                 const canvasY = (lastMouseY - canvasRect.top) * (canvas.height / canvasRect.height);
                 
                 let newHoveredIndex = -1;
                 
-                // Check if mouse is over any click area
                 menuItems.forEach((item, index) => {
-                    const y = 40 + (index * 24); // startY + index * lineHeight
+                    const y = 40 + (index * 24);
                     const textMetrics = ctx.measureText(item.text);
                     const textWidth = textMetrics.width;
                     const charWidth = ctx.measureText('M').width;
                     
                     const clickArea = {
-                        x: 20 - 2, // textX - padding
+                        x: 20 - 2,
                         y: y,
-                        width: textWidth + 4 + charWidth, // padding + charWidth
-                        height: 16 + 4 // fontSize + padding
+                        width: textWidth + 4 + charWidth,
+                        height: 16 + 4
                     };
                     
                     const rectY = clickArea.y - clickArea.height/2 - 1;
@@ -1033,7 +975,6 @@ async function run() {
         }
     }
 
-    // Function to blink LED for 3 seconds
     function blinkLed(led) {
         led.classList.remove('off');
         led.classList.add('blinking');
@@ -1044,17 +985,14 @@ async function run() {
         }, 3000);
     }
 
-    // Function to update game speed based on enzyme level
     function updateGameSpeed(enzymeLevel) {
         if (enzymeLevel === 0) {
-            // Stop the game
             game.stop();
             if (animationFrameId !== null) {
                 cancelAnimationFrame(animationFrameId);
                 animationFrameId = null;
             }
         } else {
-            // Calculate update interval: 1-99 maps to 999-10ms
             updateInterval = 999 - (enzymeLevel - 1) * (989 / 98);
             
             if (!game.is_running()) {
@@ -1065,28 +1003,25 @@ async function run() {
         }
     }
 
-    // Function to update slider mark lighting
     function updateSliderMarks(value) {
         const marks = document.querySelectorAll('.slider-marks span');
         const currentTheme = game.get_theme();
         const themeColor = currentTheme === 'amber' ? '#FFB000' : '#AAFFBB';
         
-        // Map slider value (0-99) to mark positions (0, 25, 50, 75, 99)
         const markPositions = [0, 24.75, 49.5, 74.25, 99];
         
         marks.forEach((mark, index) => {
             const markPosition = markPositions[index];
             const distance = Math.abs(value - markPosition);
             
-            // Calculate brightness: closer = brighter, with falloff
             let brightness = 0;
-            if (distance <= 12.375) { // Half the distance between marks
+            if (distance <= 12.375) {
                 if (distance === 0) {
-                    brightness = 1.0; // 100% when exactly on mark
-                } else if (distance <= 6.1875) { // Quarter distance
-                    brightness = 0.75; // 75% when very close
+                    brightness = 1.0;
+                } else if (distance <= 6.1875) {
+                    brightness = 0.75;
                 } else {
-                    brightness = 0.5 - (distance - 6.1875) / 12.375 * 0.5; // Fade from 50% to 0%
+                    brightness = 0.5 - (distance - 6.1875) / 12.375 * 0.5;
                 }
             }
             
@@ -1102,16 +1037,14 @@ async function run() {
         });
     }
 
-    // Enzyme slider functionality
     enzymeSlider.addEventListener('input', function() {
         const value = parseInt(this.value);
         enzymeDisplay.textContent = value;
         updateGameSpeed(value);
         updateSliderMarks(value);
-        saveState(); // Save state when slider changes
+        saveState();
     });
 
-    // Autoclave button (clear) functionality
     autoclaveButton.addEventListener('mousedown', function() {
         this.classList.add('active');
     });
@@ -1128,10 +1061,9 @@ async function run() {
         game.clear();
         game.render('gameCanvas');
         blinkLed(autoclaveLed);
-        saveGameState(); // Save after clearing
+        saveGameState();
     });
 
-    // Repopulate button (randomize) functionality
     repopulateButton.addEventListener('mousedown', function() {
         this.classList.add('active');
     });
@@ -1148,10 +1080,9 @@ async function run() {
         enhancedRepopulate(game);
         game.render('gameCanvas');
         blinkLed(repopulateLed);
-        saveGameState(); // Save after randomizing
+        saveGameState();
     });
 
-    // Sample button functionality (just visual effects, no game action)
     sampleButton.addEventListener('mousedown', function() {
         this.classList.add('active');
     });
@@ -1164,7 +1095,6 @@ async function run() {
         this.classList.remove('active');
     });
 
-    // Navigation button functionality
     prevButton.addEventListener('click', function() {
         previousPattern();
         updatePatternDisplay(game, cellDisplayGrid);
@@ -1174,21 +1104,48 @@ async function run() {
         nextPattern();
         updatePatternDisplay(game, cellDisplayGrid);
     });
-
-    // Sample button functionality - will implement pattern placement later
-    let selectedPatternForPlacement = null;
-
-    sampleButton.addEventListener('click', function() {
-        selectedPatternForPlacement = getCurrentPattern();
-        blinkLed(sampleLed);
-        
-        // Change canvas cursor to indicate pattern placement mode
-        if (selectedPatternForPlacement && !menuVisible) {
-            canvas.style.cursor = 'copy';
+    
+    cellDisplayGrid.addEventListener('click', function(event) {
+        if (event.target.classList.contains('grid-cell')) {
+            const cells = cellDisplayGrid.querySelectorAll('.grid-cell');
+            const cellIndex = Array.from(cells).indexOf(event.target);
+            
+            if (cellIndex >= 0 && cellIndex < currentDisplayCells.length) {
+                currentDisplayCells[cellIndex] = currentDisplayCells[cellIndex] === 1 ? 0 : 1;
+                
+                const currentTheme = game.get_theme();
+                const themeColor = currentTheme === 'amber' ? '#FFB000' : '#AAFFBB';
+                
+                if (currentDisplayCells[cellIndex] === 1) {
+                    event.target.style.backgroundColor = themeColor;
+                    event.target.style.boxShadow = `0 0 2px ${themeColor}`;
+                } else {
+                    event.target.style.backgroundColor = '';
+                    event.target.style.boxShadow = '';
+                }
+            }
         }
     });
 
-    // Theme switching functionality
+    sampleButton.addEventListener('click', function() {
+        const displayCells = getCurrentDisplayCells();
+        if (displayCells && displayCells.some(cell => cell === 1)) {
+            const timestamp = Date.now();
+            const result = addUserPattern(`Custom_${timestamp}`, displayCells, 16, 10);
+            
+            if (result.success) {
+                console.log(result.message);
+                blinkLed(sampleLed);
+            } else {
+                console.log(result.message);
+                blinkLed(sampleLed);
+            }
+        } else {
+            console.log("No pattern to memorize - display is empty");
+            blinkLed(sampleLed);
+        }
+    });
+
     function updateTheme(theme) {
         const root = document.documentElement;
         game.set_theme(theme);
@@ -1217,17 +1174,13 @@ async function run() {
         
         game.render('gameCanvas');
         
-        // Update slider marks with new theme colors
         updateSliderMarks(parseInt(enzymeSlider.value));
         
-        // Update pattern display with new theme colors
         updatePatternDisplay(game, cellDisplayGrid);
         
-        // Save state when theme changes
         saveState();
     }
 
-    // Menu button functionality
     menuButton.addEventListener('mousedown', function() {
         this.classList.add('active');
     });
@@ -1244,23 +1197,21 @@ async function run() {
         toggleMenu();
     });
 
-    // Theme switch functionality
     themeSwitch.addEventListener('click', function() {
         const currentTheme = game.get_theme();
         const newTheme = currentTheme === 'amber' ? 'green' : 'amber';
         updateTheme(newTheme);
     });
 
-    // Save game state to localStorage
     function saveGameState() {
         if (isInitializing) {
-            return; // Don't save during initialization
+            return;
         }
         
         try {
             const gridState = game.get_grid_state();
             const gameState = {
-                grid: Array.from(gridState), // Convert to regular array
+                grid: Array.from(gridState),
                 width: game.get_width(),
                 height: game.get_height(),
                 running: game.is_running(),
@@ -1273,7 +1224,6 @@ async function run() {
         }
     }
 
-    // Load game state from localStorage
     function loadGameState() {
         try {
             const savedState = localStorage.getItem('gameOfLifeState');
@@ -1282,25 +1232,20 @@ async function run() {
                 const currentWidth = game.get_width();
                 const currentHeight = game.get_height();
                 
-                // Handle grid restoration with dimension adaptation
                 if (state.grid && state.width && state.height) {
                     if (state.width === currentWidth && state.height === currentHeight) {
-                        // Exact match - direct restore
                         let gridArray;
                         if (Array.isArray(state.grid)) {
                             gridArray = state.grid;
                         } else {
-                            // Convert from object back to array (for backwards compatibility)
                             gridArray = Object.values(state.grid);
                         }
                         game.set_grid_state(gridArray);
                     } else {
-                        // Dimension mismatch - adapt the grid
                         const newGrid = new Array(currentWidth * currentHeight).fill(0);
                         const copyWidth = Math.min(state.width, currentWidth);
                         const copyHeight = Math.min(state.height, currentHeight);
                         
-                        // Convert saved grid data back to array
                         let oldGridArray;
                         if (Array.isArray(state.grid)) {
                             oldGridArray = state.grid;
@@ -1308,7 +1253,6 @@ async function run() {
                             oldGridArray = Object.values(state.grid);
                         }
                         
-                        // Copy overlapping cells
                         for (let i = 0; i < copyHeight; i++) {
                             for (let j = 0; j < copyWidth; j++) {
                                 const oldIdx = i * state.width + j;
@@ -1323,62 +1267,52 @@ async function run() {
                     }
                 }
                 
-                // Restore running state
                 if (state.running) {
                     game.start();
                 } else {
                     game.stop();
                 }
                 
-                return true; // Successfully loaded game state
+                return true;
             }
         } catch (error) {
             console.warn('Failed to load game state:', error);
         }
-        return false; // No game state loaded
+        return false;
     }
 
-    // Load saved state from localStorage
     function loadSavedState() {
         const savedEnzymeLevel = localStorage.getItem('enzymeLevel');
         const savedTheme = localStorage.getItem('theme');
         
-        // Set enzyme level (default to 10 if not saved)
         const enzymeLevel = savedEnzymeLevel ? parseInt(savedEnzymeLevel) : 10;
         enzymeSlider.value = enzymeLevel;
         enzymeDisplay.textContent = enzymeLevel;
         updateGameSpeed(enzymeLevel);
         updateSliderMarks(enzymeLevel);
         
-        // Set theme (default to amber if not saved)
         const theme = savedTheme || 'amber';
         updateTheme(theme);
         
-        // Try to load game state after UI is set up
         const gameStateLoaded = loadGameState();
         
-        // If no saved game state, use enhanced repopulate
         if (!gameStateLoaded) {
             enhancedRepopulate(game);
         }
         
         game.render('gameCanvas');
         
-        // Initialize pattern display
         updatePatternDisplay(game, cellDisplayGrid);
         
-        // Initialization complete - allow saves now
         isInitializing = false;
     }
     
-    // Save state to localStorage
     function saveState() {
         localStorage.setItem('enzymeLevel', enzymeSlider.value);
         localStorage.setItem('theme', game.get_theme());
-        saveGameState(); // Also save game state
+        saveGameState();
     }
     
-    // Initialize with saved state
     loadSavedState();
     
 }
