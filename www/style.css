@@ -466,17 +466,15 @@ body {
     display: none;
     background: linear-gradient(145deg, #2a2419, #1a1612);
     border-radius: 8px;
-    padding: 20px;
+    padding: 12px;
     box-shadow: 
         inset 0 0 15px rgba(0, 0, 0, 0.5),
         0 15px 30px rgba(0, 0, 0, 0.3),
         0 0 0 2px #3a332a,
         0 0 0 4px #1a1612;
     position: relative;
-    width: 100%;
-    max-width: 120px;
-    height: 80px;
-    margin-top: 15px;
+    margin-top: 1rem;
+    box-sizing: border-box;
 }
 
 .decorative-panel::before {
@@ -1005,14 +1003,78 @@ canvas {
 
 .controls-sidebar {
     display: flex;
-    flex-direction: row;
     align-items: flex-start;
     justify-content: center;
+    min-width: 312px;
+    max-width: 340px;
+}
+
+.controls-sidebar {
+    flex-direction: row;
     gap: 1rem;
+    justify-self: start; /* Align to left like in landscape */
 }
 
 .decorative-panel {
     display: none;
+}
+
+/* Portrait decorative panel - completely separate positioning */
+.decorative-panel-portrait {
+    display: none;
+    background: linear-gradient(145deg, #2a2419, #1a1612);
+    border-radius: 8px;
+    padding: 12px;
+    box-shadow: 
+        inset 0 0 15px rgba(0, 0, 0, 0.5),
+        0 15px 30px rgba(0, 0, 0, 0.3),
+        0 0 0 2px #3a332a,
+        0 0 0 4px #1a1612;
+    position: relative;
+    margin-top: 1rem;
+    box-sizing: border-box;
+}
+
+.decorative-panel-portrait::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 1px,
+            rgba(255, 255, 255, 0.01) 2px,
+            rgba(255, 255, 255, 0.01) 3px
+        ),
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 1px,
+            rgba(0, 0, 0, 0.02) 2px,
+            rgba(0, 0, 0, 0.02) 3px
+        );
+    border-radius: 8px;
+    pointer-events: none;
+}
+
+/* Portrait with sufficient width: Show separate decorative panel */
+@media (orientation: portrait) and (min-width: 650px) {
+    .main-container {
+        position: relative;
+    }
+    
+    .decorative-panel-portrait {
+        display: block;
+        position: absolute;
+        left: calc(1rem + 312px + 1rem); /* main padding + control panel width + gap */
+        top: 0;
+        width: calc(100vw - 312px - 4rem); /* Full width minus control panel and spacing */
+        height: 279px; /* Match exact control panel height: 184px + 23px + 48px gaps + 24px padding */
+    }
 }
 
 /* Landscape: Sidebar layout */
@@ -1030,9 +1092,9 @@ canvas {
     
     .decorative-panel {
         display: block;
-        padding: 1rem;
-        width: 120px;
-        height: 80px;
+        width: 288px; /* Match control panel width: 80px×3 + 12px×2 + 12px×2 */
+        flex: 1;
+        align-self: center; /* Align with control panel */
     }
 }
 
