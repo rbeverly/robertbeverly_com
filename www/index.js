@@ -23,10 +23,8 @@ async function run() {
         game.resize_preserve(rect.width, rect.height);
     }
 
-    // Initial resize and populate
+    // Initial resize (populate will be handled by loadSavedState)
     resizeCanvas();
-    game.randomize();
-    game.render('gameCanvas');
 
     // Handle window resize
     window.addEventListener('resize', () => {
@@ -43,6 +41,8 @@ async function run() {
     let lastUpdate = performance.now();
     let updateInterval = 100; // 100ms for 10 updates per second
     let isMouseDown = false;
+    let lastAutoSave = performance.now();
+    let isInitializing = true; // Prevent saves during initialization
 
     function getGridCoordinates(event) {
         const rect = canvas.getBoundingClientRect();
@@ -57,6 +57,12 @@ async function run() {
         const { x, y } = getGridCoordinates(event);
         game.set_cell(x, y, true); // Set cell to live
         game.render('gameCanvas'); // Immediate re-render
+        
+        // Debounced save to avoid excessive localStorage writes during painting
+        clearTimeout(window.paintSaveTimeout);
+        window.paintSaveTimeout = setTimeout(() => {
+            saveGameState();
+        }, 500); // Save 500ms after user stops painting
     }
 
     // Separate event handlers for game and menu modes
@@ -130,6 +136,12 @@ async function run() {
             if (currentTime - lastUpdate >= updateInterval) {
                 game.update(); // Model update every 100ms
                 lastUpdate = currentTime;
+                
+                // Auto-save every 30 seconds during gameplay
+                if (currentTime - lastAutoSave >= 30000) {
+                    saveGameState();
+                    lastAutoSave = currentTime;
+                }
             }
             game.render('gameCanvas'); // Render every frame
             animationFrameId = requestAnimationFrame(gameLoop);
@@ -141,8 +153,10 @@ async function run() {
     const enzymeDisplay = document.getElementById('enzymeDisplay');
     const autoclaveButton = document.getElementById('autoclaveButton');
     const repopulateButton = document.getElementById('repopulateButton');
+    const sampleButton = document.getElementById('sampleButton');
     const autoclaveLed = document.getElementById('autoclaveLed');
     const repopulateLed = document.getElementById('repopulateLed');
+    const sampleLed = document.getElementById('sampleLed');
     const themeSwitch = document.getElementById('themeSwitch');
     const amberLabel = document.querySelector('.amber-label');
     const greenLabel = document.querySelector('.green-label');
@@ -161,10 +175,8 @@ async function run() {
 
     // Function to toggle menu visibility
     function toggleMenu() {
-        console.log('toggleMenu called, current menuVisible:', menuVisible); // Debug
         menuVisible = !menuVisible;
         if (menuVisible) {
-            console.log('Opening menu'); // Debug
             menuLed.classList.remove('off');
             menuLed.classList.add('blinking');
             // Stop the game when menu is visible
@@ -434,6 +446,7 @@ async function run() {
         enzymeDisplay.textContent = value;
         updateGameSpeed(value);
         updateSliderMarks(value);
+        saveState(); // Save state when slider changes
     });
 
     // Autoclave button (clear) functionality
@@ -453,6 +466,7 @@ async function run() {
         game.clear();
         game.render('gameCanvas');
         blinkLed(autoclaveLed);
+        saveGameState(); // Save after clearing
     });
 
     // Repopulate button (randomize) functionality
@@ -472,11 +486,28 @@ async function run() {
         game.randomize();
         game.render('gameCanvas');
         blinkLed(repopulateLed);
+        saveGameState(); // Save after randomizing
+    });
+
+    // Sample button functionality (just visual effects, no game action)
+    sampleButton.addEventListener('mousedown', function() {
+        this.classList.add('active');
+    });
+
+    sampleButton.addEventListener('mouseup', function() {
+        this.classList.remove('active');
+    });
+
+    sampleButton.addEventListener('mouseleave', function() {
+        this.classList.remove('active');
+    });
+
+    sampleButton.addEventListener('click', function() {
+        blinkLed(sampleLed);
     });
 
     // Theme switching functionality
     function updateTheme(theme) {
-        console.log('Switching to theme:', theme);
         const root = document.documentElement;
         game.set_theme(theme);
         
@@ -506,6 +537,9 @@ async function run() {
         
         // Update slider marks with new theme colors
         updateSliderMarks(parseInt(enzymeSlider.value));
+        
+        // Save state when theme changes
+        saveState();
     }
 
     // Menu button functionality
@@ -527,18 +561,138 @@ async function run() {
 
     // Theme switch functionality
     themeSwitch.addEventListener('click', function() {
-        console.log('Theme switch clicked');
         const currentTheme = game.get_theme();
-        console.log('Current theme:', currentTheme);
         const newTheme = currentTheme === 'amber' ? 'green' : 'amber';
-        console.log('Switching to:', newTheme);
         updateTheme(newTheme);
     });
 
-    // Initialize with default enzyme level (10 = ~100ms) and amber theme
-    updateGameSpeed(10);
-    updateTheme('amber');
-    updateSliderMarks(10);
+    // Save game state to localStorage
+    function saveGameState() {
+        if (isInitializing) {
+            return; // Don't save during initialization
+        }
+        
+        try {
+            const gridState = game.get_grid_state();
+            const gameState = {
+                grid: Array.from(gridState), // Convert to regular array
+                width: game.get_width(),
+                height: game.get_height(),
+                running: game.is_running(),
+                theme: game.get_theme(),
+                enzymeLevel: parseInt(enzymeSlider.value)
+            };
+            localStorage.setItem('gameOfLifeState', JSON.stringify(gameState));
+        } catch (error) {
+            console.warn('Failed to save game state:', error);
+        }
+    }
+
+    // Load game state from localStorage
+    function loadGameState() {
+        try {
+            const savedState = localStorage.getItem('gameOfLifeState');
+            if (savedState) {
+                const state = JSON.parse(savedState);
+                const currentWidth = game.get_width();
+                const currentHeight = game.get_height();
+                
+                // Handle grid restoration with dimension adaptation
+                if (state.grid && state.width && state.height) {
+                    if (state.width === currentWidth && state.height === currentHeight) {
+                        // Exact match - direct restore
+                        let gridArray;
+                        if (Array.isArray(state.grid)) {
+                            gridArray = state.grid;
+                        } else {
+                            // Convert from object back to array (for backwards compatibility)
+                            gridArray = Object.values(state.grid);
+                        }
+                        game.set_grid_state(gridArray);
+                    } else {
+                        // Dimension mismatch - adapt the grid
+                        const newGrid = new Array(currentWidth * currentHeight).fill(0);
+                        const copyWidth = Math.min(state.width, currentWidth);
+                        const copyHeight = Math.min(state.height, currentHeight);
+                        
+                        // Convert saved grid data back to array
+                        let oldGridArray;
+                        if (Array.isArray(state.grid)) {
+                            oldGridArray = state.grid;
+                        } else {
+                            oldGridArray = Object.values(state.grid);
+                        }
+                        
+                        // Copy overlapping cells
+                        for (let i = 0; i < copyHeight; i++) {
+                            for (let j = 0; j < copyWidth; j++) {
+                                const oldIdx = i * state.width + j;
+                                const newIdx = i * currentWidth + j;
+                                if (oldIdx < oldGridArray.length) {
+                                    newGrid[newIdx] = oldGridArray[oldIdx];
+                                }
+                            }
+                        }
+                        
+                        game.set_grid_state(newGrid);
+                    }
+                }
+                
+                // Restore running state
+                if (state.running) {
+                    game.start();
+                } else {
+                    game.stop();
+                }
+                
+                return true; // Successfully loaded game state
+            }
+        } catch (error) {
+            console.warn('Failed to load game state:', error);
+        }
+        return false; // No game state loaded
+    }
+
+    // Load saved state from localStorage
+    function loadSavedState() {
+        const savedEnzymeLevel = localStorage.getItem('enzymeLevel');
+        const savedTheme = localStorage.getItem('theme');
+        
+        // Set enzyme level (default to 10 if not saved)
+        const enzymeLevel = savedEnzymeLevel ? parseInt(savedEnzymeLevel) : 10;
+        enzymeSlider.value = enzymeLevel;
+        enzymeDisplay.textContent = enzymeLevel;
+        updateGameSpeed(enzymeLevel);
+        updateSliderMarks(enzymeLevel);
+        
+        // Set theme (default to amber if not saved)
+        const theme = savedTheme || 'amber';
+        updateTheme(theme);
+        
+        // Try to load game state after UI is set up
+        const gameStateLoaded = loadGameState();
+        
+        // If no saved game state, randomize the grid
+        if (!gameStateLoaded) {
+            game.randomize();
+        }
+        
+        game.render('gameCanvas');
+        
+        // Initialization complete - allow saves now
+        isInitializing = false;
+    }
+    
+    // Save state to localStorage
+    function saveState() {
+        localStorage.setItem('enzymeLevel', enzymeSlider.value);
+        localStorage.setItem('theme', game.get_theme());
+        saveGameState(); // Also save game state
+    }
+    
+    // Initialize with saved state
+    loadSavedState();
+    
 }
 
 run();

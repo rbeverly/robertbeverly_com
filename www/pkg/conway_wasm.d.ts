@@ -15,6 +15,10 @@ export class Game {
   get_theme(): string;
   update(): void;
   is_running(): boolean;
+  get_grid_state(): Uint8Array;
+  set_grid_state(grid: Uint8Array): void;
+  get_width(): number;
+  get_height(): number;
 }
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
@@ -35,6 +39,10 @@ export interface InitOutput {
   readonly game_get_theme: (a: number) => [number, number];
   readonly game_update: (a: number) => void;
   readonly game_is_running: (a: number) => number;
+  readonly game_get_grid_state: (a: number) => [number, number];
+  readonly game_set_grid_state: (a: number, b: number, c: number) => void;
+  readonly game_get_width: (a: number) => number;
+  readonly game_get_height: (a: number) => number;
   readonly __wbindgen_exn_store: (a: number) => void;
   readonly __externref_table_alloc: () => number;
   readonly __wbindgen_export_2: WebAssembly.Table;

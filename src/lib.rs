@@ -178,4 +178,22 @@ impl Game {
     pub fn is_running(&self) -> bool {
         self.running
     }
+
+    pub fn get_grid_state(&self) -> Vec<u8> {
+        self.grid.iter().map(|&b| if b { 1 } else { 0 }).collect()
+    }
+
+    pub fn set_grid_state(&mut self, grid: Vec<u8>) {
+        if grid.len() == self.width * self.height {
+            self.grid = grid.iter().map(|&b| b != 0).collect();
+        }
+    }
+
+    pub fn get_width(&self) -> usize {
+        self.width
+    }
+
+    pub fn get_height(&self) -> usize {
+        self.height
+    }
 }

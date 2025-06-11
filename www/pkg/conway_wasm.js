@@ -167,6 +167,18 @@ function getDataViewMemory0() {
     return cachedDataViewMemory0;
 }
 
+function getArrayU8FromWasm0(ptr, len) {
+    ptr = ptr >>> 0;
+    return getUint8ArrayMemory0().subarray(ptr / 1, ptr / 1 + len);
+}
+
+function passArray8ToWasm0(arg, malloc) {
+    const ptr = malloc(arg.length * 1, 1) >>> 0;
+    getUint8ArrayMemory0().set(arg, ptr / 1);
+    WASM_VECTOR_LEN = arg.length;
+    return ptr;
+}
+
 const GameFinalization = (typeof FinalizationRegistry === 'undefined')
     ? { register: () => {}, unregister: () => {} }
     : new FinalizationRegistry(ptr => wasm.__wbg_game_free(ptr >>> 0, 1));
@@ -264,6 +276,37 @@ export class Game {
     is_running() {
         const ret = wasm.game_is_running(this.__wbg_ptr);
         return ret !== 0;
+    }
+    /**
+     * @returns {Uint8Array}
+     */
+    get_grid_state() {
+        const ret = wasm.game_get_grid_state(this.__wbg_ptr);
+        var v1 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
+        return v1;
+    }
+    /**
+     * @param {Uint8Array} grid
+     */
+    set_grid_state(grid) {
+        const ptr0 = passArray8ToWasm0(grid, wasm.__wbindgen_malloc);
+        const len0 = WASM_VECTOR_LEN;
+        wasm.game_set_grid_state(this.__wbg_ptr, ptr0, len0);
+    }
+    /**
+     * @returns {number}
+     */
+    get_width() {
+        const ret = wasm.game_get_width(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+     * @returns {number}
+     */
+    get_height() {
+        const ret = wasm.game_get_height(this.__wbg_ptr);
+        return ret >>> 0;
     }
 }
 
