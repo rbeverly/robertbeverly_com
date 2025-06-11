@@ -42,10 +42,12 @@ This is a Conway's Game of Life implementation with a retro-styled control panel
 
 2. **Frontend Interface** (`www/index.js`): JavaScript application controller
    - Initializes WASM module and manages game lifecycle
-   - Handles mouse interaction for cell painting
+   - Handles mouse interaction for cell painting and pattern placement
    - Controls game speed via enzyme slider (0-99 maps to 999-10ms intervals)
    - Manages retro control panel interactions (buttons, LEDs, theme switching)
    - Canvas-based navigation menu system with hover effects
+   - Pattern library system with 20+ classic Conway's Game of Life patterns
+   - Enhanced population system using structured pattern placement
 
 3. **Retro UI System** (`www/style.css`): CRT monitor and control panel styling
    - 80x46px grid-based control panel layout with compact menu button
@@ -59,6 +61,8 @@ This is a Conway's Game of Life implementation with a retro-styled control panel
 - **Theme System**: Synchronized between WASM rendering and CSS variables
 - **Adaptive Canvas**: Auto-resizes game grid with state preservation during window resize
 - **Menu System**: Canvas-based navigation with HTML overlay hover detection and SEO-friendly hidden links
+- **Pattern System**: 16x10 pattern library with cycling navigation and click-to-place functionality
+- **Smart Population**: Enhanced populate function places patterns in 16x10 sections with 6% probability
 
 ### File Structure
 ```
@@ -72,3 +76,27 @@ www/
 ```
 
 The application uses a fixed 3x3 pixel cell size for consistent visual appearance across different screen sizes.
+
+## Pattern System
+
+### Pattern Library
+- All patterns stored as 16x10 grids positioned at top-left for easy placement
+- Includes 20+ classic patterns: Block, Glider, LWSS, Pulsar, Acorn, R-Pentomino, etc.
+- User patterns can be saved to localStorage (framework ready)
+
+### Controls
+- **Arrow Buttons**: Cycle through pattern library
+- **MEMORIZE Button**: Select current pattern for placement
+- **Click Canvas**: Place memorized pattern at cursor location
+- **POPULATE Button**: Enhanced randomization using pattern library
+
+### Pattern Format
+```javascript
+pattern_name: {
+    name: "Display Name",
+    width: 16,
+    height: 10,
+    cells: [160 values: 1=alive, 0=dead],
+    builtin: true
+}
+```
