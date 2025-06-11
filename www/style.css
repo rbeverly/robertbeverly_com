@@ -100,15 +100,6 @@ body {
         inset 0 -2px 6px rgba(0, 0, 0, 0.2);
 }
 
-.button-brown {
-    background: 
-        radial-gradient(ellipse at 30% 30%, #8b6f47, #6b5437),
-        linear-gradient(145deg, #7a5f3f, #5a4530);
-    box-shadow: 
-        0 6px 12px rgba(0, 0, 0, 0.4),
-        inset 0 1px 3px rgba(255, 255, 255, 0.2),
-        inset 0 -2px 6px rgba(0, 0, 0, 0.3);
-}
 
 .grid-button::before {
     content: '';
@@ -185,18 +176,6 @@ body {
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.3);
 }
 
-/* Enzyme slider section - spans 2 columns */
-.enzyme-slider-section {
-    grid-column: span 2;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 2px;
-    height: 46px;
-    width: calc(80px * 2 + 12px);
-    position: relative;
-}
 
 /* Alternative slider section - spans 2 columns, no label */
 .alt-slider-section {
@@ -210,24 +189,7 @@ body {
     width: calc(80px * 2 + 12px);
 }
 
-/* Enzyme label */
-.enzyme-label {
-    font-family: 'Courier New', monospace;
-    font-size: 11px;
-    font-weight: bold;
-    color: #8b7355;
-    letter-spacing: 1px;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-    position: absolute;
-    top: 4px;
-    left: 50%;
-    transform: translateX(-50%);
-}
 
-.slider-container {
-    position: relative;
-    width: 100%;
-}
 
 .retro-slider {
     -webkit-appearance: none;
@@ -324,37 +286,6 @@ body {
     margin-bottom: 4px;
 }
 
-.value-display {
-    background: 
-        linear-gradient(145deg, #1a1612, #2a2419);
-    border: 1px solid #3a332a;
-    border-radius: 4px;
-    font-family: 'Courier New', monospace;
-    font-size: 14px;
-    font-weight: bold;
-    color: #d4a574;
-    text-shadow: 0 0 4px #d4a574;
-    box-shadow: 
-        inset 0 2px 4px rgba(0, 0, 0, 0.5),
-        0 1px 2px rgba(0, 0, 0, 0.3);
-    text-align: center;
-    width: 60px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    animation: subtle-glow 3s ease-in-out infinite;
-    transition: color 0.3s ease, text-shadow 0.3s ease;
-}
-
-.value-display.green {
-    color: #AAFFBB;
-    text-shadow: 0 0 4px #AAFFBB;
-}
-
-.value-display.green {
-    animation: subtle-glow-green 3s ease-in-out infinite;
-}
 
 /* Enzyme display cell - label and small display */
 .enzyme-display-cell {
@@ -876,22 +807,6 @@ canvas {
     animation: crt-horizontal-line 8s infinite;
 }
 
-/* Rotary Switch Styles */
-.theme-switch-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-}
-
-.theme-switch-label {
-    font-family: 'Courier New', monospace;
-    font-size: 10px;
-    font-weight: bold;
-    color: #8b7355;
-    letter-spacing: 1px;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-}
 
 .rotary-switch {
     position: relative;
