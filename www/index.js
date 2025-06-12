@@ -1,5 +1,169 @@
 import init, { Game } from './pkg/conway_wasm.js';
 
+// Sound System
+/**
+ * Retro-style sound engine for Conway's Game of Life interface
+ * Generates authentic 80s computer sound effects using Web Audio API
+ */
+class RetroSoundEngine {
+    constructor() {
+        this.audioCtx = null;
+        this.masterVolume = 0.15;
+    }
+    
+    getAudioContext() {
+        if (!this.audioCtx) {
+            try {
+                this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            } catch (e) {
+                console.warn("Web Audio API not supported in this browser");
+                return null;
+            }
+        }
+        return this.audioCtx;
+    }
+    
+    playTone(frequency, duration = 100, volume = 1.0, waveType = 'square') {
+        const ctx = this.getAudioContext();
+        if (!ctx) return;
+        
+        const oscillator = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+        
+        oscillator.type = waveType;
+        oscillator.frequency.value = frequency;
+        gainNode.gain.value = this.masterVolume * volume;
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(ctx.destination);
+        
+        oscillator.start();
+        gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration / 1000);
+        
+        setTimeout(() => {
+            oscillator.stop();
+        }, duration);
+    }
+    
+    playMenuClick() {
+        this.playTone(660, 120, 0.6);
+    }
+    
+    playNavClick() {
+        this.playTone(330, 100, 0.7);
+    }
+    
+    playAutoclave() {
+        // Low-frequency electrical hum simulation
+        this.playTone(60, 300, 0.8, 'sawtooth');
+        this.playTone(120, 300, 0.6, 'square');
+        
+        // High-frequency noise burst for steam effect
+        setTimeout(() => {
+            this.playNoise(800, 0.4, 'highpass');
+        }, 250);
+    }
+    
+    playNoise(duration, volume, filterType = 'lowpass', filterFreq = null) {
+        const ctx = this.getAudioContext();
+        if (!ctx) return;
+        
+        const bufferSize = Math.max(ctx.sampleRate * 0.1, ctx.sampleRate * duration / 1000);
+        const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+        const output = noiseBuffer.getChannelData(0);
+        
+        for (let i = 0; i < bufferSize; i++) {
+            output[i] = Math.random() * 2 - 1;
+        }
+        
+        const whiteNoise = ctx.createBufferSource();
+        whiteNoise.buffer = noiseBuffer;
+        
+        const filter = ctx.createBiquadFilter();
+        filter.type = filterType;
+        filter.frequency.value = filterFreq || (filterType === 'highpass' ? 2000 : 1000);
+        filter.Q.value = filterType === 'bandpass' ? 5 : (filterType === 'highpass' && filterFreq > 3000 ? 2 : 0.5);
+        
+        const gainNode = ctx.createGain();
+        gainNode.gain.setValueAtTime(this.masterVolume * volume, ctx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration / 1000);
+        
+        whiteNoise.connect(filter);
+        filter.connect(gainNode);
+        gainNode.connect(ctx.destination);
+        
+        whiteNoise.start(ctx.currentTime);
+        whiteNoise.stop(ctx.currentTime + duration / 1000);
+    }
+    
+    playPopulate() {
+        this.playTone(523, 80, 0.6);
+        setTimeout(() => this.playTone(659, 80, 0.5), 90);
+        setTimeout(() => this.playTone(784, 80, 0.4), 180);
+    }
+    
+    playThemeToggle() {
+        const ctx = this.getAudioContext();
+        if (!ctx) return;
+        
+        // Create a sharp click by generating a brief impulse
+        const sampleRate = ctx.sampleRate;
+        const clickDuration = 0.008; // 8ms
+        const bufferLength = Math.floor(sampleRate * clickDuration);
+        
+        const buffer = ctx.createBuffer(1, bufferLength, sampleRate);
+        const data = buffer.getChannelData(0);
+        
+        // Create a smoother impulse with quick decay
+        for (let i = 0; i < bufferLength; i++) {
+            const envelope = Math.exp(-i / (bufferLength * 0.2));
+            // Smoother noise by averaging multiple random values
+            const noise = ((Math.random() + Math.random() + Math.random()) / 3 - 0.5) * 2;
+            data[i] = noise * envelope;
+        }
+        
+        const source = ctx.createBufferSource();
+        source.buffer = buffer;
+        
+        const gainNode = ctx.createGain();
+        gainNode.gain.value = this.masterVolume * 2.0;
+        
+        source.connect(gainNode);
+        gainNode.connect(ctx.destination);
+        
+        source.start(ctx.currentTime);
+    }
+    
+    playSliderMove(value) {
+        const frequency = 220 + (value * 3);
+        this.playTone(frequency, 40, 0.3, 'sine');
+    }
+    
+    playCellPaint() {
+        const frequency = 800 + Math.random() * 400;
+        this.playTone(frequency, 60, 0.4, 'square');
+    }
+    
+    playPatternDrop() {
+        this.playTone(659, 80, 0.7);
+        setTimeout(() => this.playTone(523, 80, 0.6), 60);
+        setTimeout(() => this.playTone(392, 100, 0.5), 120);
+    }
+    
+    playMemorize() {
+        this.playTone(880, 100, 0.6, 'triangle');
+        setTimeout(() => this.playTone(1047, 150, 0.4, 'triangle'), 110);
+    }
+    
+    playError() {
+        this.playTone(120, 250, 0.8, 'sawtooth');
+        setTimeout(() => this.playTone(100, 200, 0.7, 'sawtooth'), 100);
+        setTimeout(() => this.playTone(80, 150, 0.6, 'sawtooth'), 200);
+    }
+}
+
+const soundEngine = new RetroSoundEngine();
+
 // Template
             // 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
             // 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -677,6 +841,7 @@ async function run() {
     }
 
     function paintCell(event) {
+        soundEngine.playCellPaint();
         const { x, y } = getGridCoordinates(event);
         game.set_cell(x, y, true);
         game.render('gameCanvas');
@@ -690,6 +855,7 @@ async function run() {
     function handleCanvasClick(event) {
         const displayCells = getCurrentDisplayCells();
         if (displayCells && displayCells.some(cell => cell === 1)) {
+            soundEngine.playPatternDrop();
             const displayPattern = {
                 cells: displayCells,
                 width: 16,
@@ -984,6 +1150,23 @@ async function run() {
             led.classList.add('off');
         }, 3000);
     }
+    
+    function blinkLedRed(led) {
+        const wasGreen = led.classList.contains('green');
+        led.classList.remove('off');
+        if (wasGreen) {
+            led.classList.remove('green');
+        }
+        led.classList.add('blinking-red');
+        
+        setTimeout(() => {
+            led.classList.remove('blinking-red');
+            if (wasGreen) {
+                led.classList.add('green');
+            }
+            led.classList.add('off');
+        }, 3000);
+    }
 
     function updateGameSpeed(enzymeLevel) {
         if (enzymeLevel === 0) {
@@ -1039,6 +1222,7 @@ async function run() {
 
     enzymeSlider.addEventListener('input', function() {
         const value = parseInt(this.value);
+        soundEngine.playSliderMove(value);
         enzymeDisplay.textContent = value;
         updateGameSpeed(value);
         updateSliderMarks(value);
@@ -1058,6 +1242,7 @@ async function run() {
     });
 
     autoclaveButton.addEventListener('click', function() {
+        soundEngine.playAutoclave();
         game.clear();
         game.render('gameCanvas');
         blinkLed(autoclaveLed);
@@ -1077,6 +1262,7 @@ async function run() {
     });
 
     repopulateButton.addEventListener('click', function() {
+        soundEngine.playPopulate();
         enhancedRepopulate(game);
         game.render('gameCanvas');
         blinkLed(repopulateLed);
@@ -1096,17 +1282,20 @@ async function run() {
     });
 
     prevButton.addEventListener('click', function() {
+        soundEngine.playNavClick();
         previousPattern();
         updatePatternDisplay(game, cellDisplayGrid);
     });
 
     nextButton.addEventListener('click', function() {
+        soundEngine.playNavClick();
         nextPattern();
         updatePatternDisplay(game, cellDisplayGrid);
     });
     
     cellDisplayGrid.addEventListener('click', function(event) {
         if (event.target.classList.contains('grid-cell')) {
+            soundEngine.playCellPaint();
             const cells = cellDisplayGrid.querySelectorAll('.grid-cell');
             const cellIndex = Array.from(cells).indexOf(event.target);
             
@@ -1134,15 +1323,18 @@ async function run() {
             const result = addUserPattern(`Custom_${timestamp}`, displayCells, 16, 10);
             
             if (result.success) {
+                soundEngine.playMemorize();
                 console.log(result.message);
                 blinkLed(sampleLed);
             } else {
+                soundEngine.playError();
                 console.log(result.message);
-                blinkLed(sampleLed);
+                blinkLedRed(sampleLed);
             }
         } else {
+            soundEngine.playError();
             console.log("No pattern to memorize - display is empty");
-            blinkLed(sampleLed);
+            blinkLedRed(sampleLed);
         }
     });
 
@@ -1176,7 +1368,17 @@ async function run() {
         
         updateSliderMarks(parseInt(enzymeSlider.value));
         
-        updatePatternDisplay(game, cellDisplayGrid);
+        // Update only the colors of existing cells without resetting the pattern
+        const cells = cellDisplayGrid.querySelectorAll('.grid-cell');
+        const currentTheme = game.get_theme();
+        const themeColor = currentTheme === 'amber' ? '#FFB000' : '#AAFFBB';
+        
+        cells.forEach((cell, index) => {
+            if (currentDisplayCells[index] === 1) {
+                cell.style.backgroundColor = themeColor;
+                cell.style.boxShadow = `0 0 2px ${themeColor}`;
+            }
+        });
         
         saveState();
     }
@@ -1194,13 +1396,23 @@ async function run() {
     });
 
     menuButton.addEventListener('click', function() {
-        toggleMenu();
+        soundEngine.playMenuClick();
+        
+        // Delay menu toggle to avoid interfering with audio
+        setTimeout(() => {
+            toggleMenu();
+        }, 10);
     });
 
     themeSwitch.addEventListener('click', function() {
-        const currentTheme = game.get_theme();
-        const newTheme = currentTheme === 'amber' ? 'green' : 'amber';
-        updateTheme(newTheme);
+        soundEngine.playThemeToggle();
+        
+        // Delay theme update to avoid interfering with audio
+        setTimeout(() => {
+            const currentTheme = game.get_theme();
+            const newTheme = currentTheme === 'amber' ? 'green' : 'amber';
+            updateTheme(newTheme);
+        }, 10);
     });
 
     function saveGameState() {
